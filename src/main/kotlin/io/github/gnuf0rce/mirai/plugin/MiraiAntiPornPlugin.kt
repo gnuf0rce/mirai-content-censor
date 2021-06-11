@@ -8,18 +8,22 @@ import net.mamoe.mirai.console.util.ConsoleExperimentalApi
 
 object MiraiAntiPornPlugin : KotlinPlugin(
     JvmPluginDescription("io.github.gnuf0rce.anti-porn", "1.0.0-dev-1") {
-        name("rss-helper")
+        name("anti-porn")
         author("cssxsh")
     }
 ) {
-    lateinit var client: AipContentCensor
-        private set
+    val client: AipContentCensor by lazy {
+        runCatching {
+            ContentCensorConfig.reload()
+            AipContentCensor(config = ContentCensorConfig)
+        }.onFailure {
+            logger.warning(it)
+        }.getOrThrow()
+    }
 
     @ConsoleExperimentalApi
     override fun onEnable() {
         ContentCensorConfig.reload()
-
-        client = AipContentCensor(config = ContentCensorConfig)
 
         AntiPornSubscriber.start()
     }
