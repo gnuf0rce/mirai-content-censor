@@ -16,14 +16,12 @@ import net.mamoe.mirai.contact.isOperator
 import net.mamoe.mirai.event.events.GroupMessageEvent
 import net.mamoe.mirai.event.globalEventChannel
 import net.mamoe.mirai.event.subscribeGroupMessages
-import net.mamoe.mirai.message.data.At
-import net.mamoe.mirai.message.data.Image
+import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import net.mamoe.mirai.message.data.MessageSource.Key.quote
 import net.mamoe.mirai.message.data.MessageSource.Key.recall
 import net.mamoe.mirai.message.data.MessageSource.Key.recallIn
-import net.mamoe.mirai.message.data.content
-import net.mamoe.mirai.utils.warning
+import net.mamoe.mirai.utils.*
 import org.json.JSONObject
 import java.net.URI
 
@@ -75,19 +73,25 @@ internal suspend fun GroupMessageEvent.handle(result: ContentCensorResult) {
     }
 }
 
+internal suspend fun GroupMessageEvent.handle(message: MessageChain) {
+    // Text Censor
+    handle(client.textCensorUserDefined(message.content).parser())
+    // Image Censor
+    message.filterIsInstance<Image>().forEach {
+        handle(client.imageCensorUserDefined(it.queryUrl(), EImgType.URL, null).parser())
+    }
+    // Forward
+    message.firstIsInstance<ForwardMessage>().nodeList.forEach { node ->
+        handle(node.messageChain)
+    }
+}
+
 @ConsoleExperimentalApi
 object AntiPornSubscriber : CoroutineScope by MiraiAntiPornPlugin.childScope("AntiPorn") {
 
     fun start(): Unit = globalEventChannel().run {
         subscribeGroupMessages {
-            content { sender.isAdministrator().not() && group.botAsMember.isOperator() }.invoke {
-                // Text Censor
-                handle(client.textCensorUserDefined(message.content).parser())
-                // Image Censor
-                message.filterIsInstance<Image>().forEach {
-                    handle(client.imageCensorUserDefined(it.queryUrl(), EImgType.URL, null).parser())
-                }
-            }
+            content { sender.isAdministrator().not() && group.botAsMember.isOperator() }.invoke { handle(message) }
         }
     }
 
