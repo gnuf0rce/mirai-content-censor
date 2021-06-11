@@ -7,7 +7,7 @@ import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
 import net.mamoe.mirai.console.util.ConsoleExperimentalApi
 
 object MiraiAntiPornPlugin : KotlinPlugin(
-    JvmPluginDescription("io.github.gnuf0rce.rss-helper", "1.0.0-dev-1") {
+    JvmPluginDescription("io.github.gnuf0rce.anti-porn", "1.0.0-dev-1") {
         name("rss-helper")
         author("cssxsh")
     }
