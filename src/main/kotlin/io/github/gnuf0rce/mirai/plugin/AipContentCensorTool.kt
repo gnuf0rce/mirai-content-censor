@@ -93,7 +93,7 @@ object AntiPornSubscriber : CoroutineScope by MiraiAntiPornPlugin.childScope("An
 
     fun start(): Unit = globalEventChannel().run {
         subscribeGroupMessages {
-            content { sender.isAdministrator().not() && group.botAsMember.isOperator() }.invoke { handle(message) }
+            content { sender.isOperator().not() && group.botAsMember.isOperator() }.invoke { handle(message) }
         }
     }
 
