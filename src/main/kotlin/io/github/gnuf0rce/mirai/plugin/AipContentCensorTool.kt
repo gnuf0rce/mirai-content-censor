@@ -75,7 +75,9 @@ internal suspend fun GroupMessageEvent.handle(result: ContentCensorResult) {
 
 internal suspend fun GroupMessageEvent.handle(message: MessageChain) {
     // Text Censor
-    handle(client.textCensorUserDefined(message.content).parser())
+    if (message.content.isNotBlank()) {
+        handle(client.textCensorUserDefined(message.content).parser())
+    }
     // Image Censor
     message.filterIsInstance<Image>().forEach {
         handle(client.imageCensorUserDefined(it.queryUrl(), EImgType.URL, null).parser())
