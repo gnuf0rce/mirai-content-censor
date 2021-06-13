@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "io.github.gnuf0rce"
-version = "0.1.0-dev"
+version = "0.1.0-dev-2"
 
 repositories {
     mavenLocal()
