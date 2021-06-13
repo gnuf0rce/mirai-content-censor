@@ -83,7 +83,7 @@ internal suspend fun GroupMessageEvent.handle(message: MessageChain) {
         handle(client.imageCensorUserDefined(it.queryUrl(), EImgType.URL, null).parser())
     }
     // Forward
-    message.firstIsInstance<ForwardMessage>().nodeList.forEach { node ->
+    message.filterIsInstance<ForwardMessage>().flatMap(ForwardMessage::nodeList).forEach { node ->
         handle(node.messageChain)
     }
 }
