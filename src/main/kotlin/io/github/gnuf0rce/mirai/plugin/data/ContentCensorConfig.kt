@@ -5,7 +5,7 @@ import net.mamoe.mirai.console.data.ValueDescription
 import net.mamoe.mirai.console.data.ValueName
 import net.mamoe.mirai.console.data.value
 
-object ContentCensorConfig: ReadOnlyPluginConfig("ContentCensor"), AipClientConfig {
+object ContentCensorConfig : ReadOnlyPluginConfig("ContentCensor"), AipClientConfig, HandleConfig {
     @ValueName("app_id")
     @ValueDescription("百度AI客户端 APP_ID")
     override val appId: String by value("")
@@ -29,4 +29,12 @@ object ContentCensorConfig: ReadOnlyPluginConfig("ContentCensor"), AipClientConf
     @ValueName("proxy")
     @ValueDescription("百度AI客户端 代理, 格式 http://127.0.0.1:80 或 socket://127.0.0.1:1080")
     override val proxy: String by value("")
+
+    @ValueName("mute")
+    @ValueDescription("禁言时间，单位秒")
+    override val mute: Int by value(60)
+
+    @ValueName("image")
+    @ValueDescription("是否检查图片")
+    override val image: Boolean by value(true)
 }

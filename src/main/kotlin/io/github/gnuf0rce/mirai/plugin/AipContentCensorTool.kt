@@ -11,16 +11,13 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import net.mamoe.mirai.console.util.ConsoleExperimentalApi
 import net.mamoe.mirai.console.util.CoroutineScopeUtils.childScope
-import net.mamoe.mirai.contact.isAdministrator
 import net.mamoe.mirai.contact.isOperator
 import net.mamoe.mirai.event.events.GroupMessageEvent
 import net.mamoe.mirai.event.globalEventChannel
 import net.mamoe.mirai.event.subscribeGroupMessages
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
-import net.mamoe.mirai.message.data.MessageSource.Key.quote
 import net.mamoe.mirai.message.data.MessageSource.Key.recall
-import net.mamoe.mirai.message.data.MessageSource.Key.recallIn
 import net.mamoe.mirai.utils.*
 import org.json.JSONObject
 import java.net.URI
@@ -28,6 +25,8 @@ import java.net.URI
 private val client by MiraiAntiPornPlugin::client
 
 private val logger by MiraiAntiPornPlugin::logger
+
+private val config: HandleConfig get() = ContentCensorConfig
 
 internal fun AipContentCensor(config: AipClientConfig): AipContentCensor = config.run {
     check(listOf(appId, apiKey, secretKey).none(String::isBlank)) {
@@ -54,18 +53,24 @@ internal fun JSONObject.parser(): ContentCensorResult {
 }
 
 internal suspend fun GroupMessageEvent.handle(result: ContentCensorResult) {
-    when(result.conclusionType) {
+    when (result.conclusionType) {
         1 -> {
             // 1.合规
         }
         2 -> {// 2.不合规
+            logger.info {
+                "$group 消息不合规, ${result.data.flatMap(ContentCensorData::hits).flatMap(ContentCensorHit::words)}"
+            }
             message.recall()
-            sender.mute(60 * result.data.size)
+            sender.mute(config.mute)
             group.sendMessage(At(sender) + result.data.joinToString { it.msg })
         }
         3 -> {// 3.疑似
-            message.recallIn(10 * 1000)
-            group.sendMessage(message.quote() + result.data.joinToString { it.msg })
+            logger.info {
+                "$group 消息疑似, ${result.data.flatMap(ContentCensorData::hits).flatMap(ContentCensorHit::words)}"
+            }
+            message.recall()
+            group.sendMessage(At(sender) + result.data.joinToString { it.msg })
         }
         else -> {// 4.审核失败
             logger.warning { result.conclusion }
@@ -79,7 +84,7 @@ internal suspend fun GroupMessageEvent.handle(message: MessageChain) {
         handle(client.textCensorUserDefined(message.content).parser())
     }
     // Image Censor
-    message.filterIsInstance<Image>().forEach {
+    if (config.image) message.filterIsInstance<Image>().forEach {
         handle(client.imageCensorUserDefined(it.queryUrl(), EImgType.URL, null).parser())
     }
     // Forward
