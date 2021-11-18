@@ -9,7 +9,8 @@ import java.net.*
 
 internal val censor by lazy {
     MiraiAntiPornPlugin.runCatching {
-        AipContentCensor(config = ContentCensorConfig.apply { reload() })
+        ContentCensorConfig.reload()
+        AipContentCensor(config = ContentCensorConfig)
     }.onFailure {
         MiraiAntiPornPlugin.logger.warning(it)
     }.getOrThrow()
