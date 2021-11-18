@@ -57,7 +57,7 @@ object AntiPornListener : SimpleListenerHost() {
                 // 2.不合规
                 logger.info { "${sender.render()} 消息不合规, ${result.data.flatMap(ContentCensorData::hits)}" }
                 message.recall()
-                sender.mute(config.mute)
+                sender.mute(maxOf(config.mute * result.data.size, config.mute))
                 group.sendMessage(At(sender) + result.data.joinToString { it.msg })
             }
             3 -> {
