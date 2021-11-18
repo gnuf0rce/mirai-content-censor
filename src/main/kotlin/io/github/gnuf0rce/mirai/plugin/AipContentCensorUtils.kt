@@ -38,12 +38,6 @@ private val JsonParser = Json {
     ignoreUnknownKeys = true
 }
 
-@OptIn(ExperimentalSerializationApi::class)
-internal fun JSONObject.parser(): ContentCensorResult {
-    check("error_code" !in keys().asSequence()) { "审核API错误, ${toString()}" }
-    return JsonParser.decodeFromString(toString())
-}
-
 @Serializable
 data class ContentCensorResult(
     @SerialName("conclusion")
@@ -56,7 +50,16 @@ data class ContentCensorResult(
     val logId: Long,
     @SerialName("isHitMd5")
     val isHitMd5: Boolean = false
-)
+) {
+
+    companion object {
+        @OptIn(ExperimentalSerializationApi::class)
+        fun parser(json: JSONObject): ContentCensorResult {
+            check("error_code" !in json.keys().asSequence()) { "审核API错误, ${toString()}" }
+            return JsonParser.decodeFromString(toString())
+        }
+    }
+}
 
 @Serializable
 data class ContentCensorData(

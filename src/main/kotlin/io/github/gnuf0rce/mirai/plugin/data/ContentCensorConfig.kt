@@ -31,7 +31,15 @@ object ContentCensorConfig : ReadOnlyPluginConfig("ContentCensor"), AipClientCon
     @ValueDescription("禁言时间，单位秒")
     override val mute: Int by value(60)
 
+    @ValueName("plain")
+    @ValueDescription("是否检查图片")
+    override val plain: Boolean by value(true)
+
     @ValueName("image")
     @ValueDescription("是否检查图片")
     override val image: Boolean by value(true)
+
+    @ValueName("audio")
+    @ValueDescription("是否检查语音")
+    override val audio: Boolean by value(false)
 }

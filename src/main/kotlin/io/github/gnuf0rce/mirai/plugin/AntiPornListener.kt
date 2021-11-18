@@ -8,6 +8,7 @@ import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import net.mamoe.mirai.message.data.MessageSource.Key.recall
 import net.mamoe.mirai.utils.*
+import org.json.*
 
 object AntiPornListener : SimpleListenerHost() {
 
@@ -16,25 +17,34 @@ object AntiPornListener : SimpleListenerHost() {
 
     private suspend fun GroupMessageEvent.censor(message: MessageChain) {
         // Text Censor
-        if (message.content.isNotBlank()) {
-            manage(censor.textCensorUserDefined(message.content).parser())
+        if (message.content.isNotBlank() && config.plain) {
+            manage(censor.textCensorUserDefined(message.content))
         }
         // Image Censor
         if (config.image) {
             for (image in message.filterIsInstance<Image>()) {
-                manage(censor.imageCensorUserDefined(image.queryUrl(), EImgType.URL, null).parser())
+                manage(censor.imageCensorUserDefined(image.queryUrl(), EImgType.URL, null))
+            }
+        }
+        // Audio Censor
+        if (config.audio) {
+            for (audio in message.filterIsInstance<OnlineAudio>()) {
+                manage(censor.voiceCensorUserDefined(audio.urlForDownload, EImgType.URL, audio.codec.formatName, null))
             }
         }
         // Forward
-        val forward = message.firstIsInstanceOrNull<ForwardMessage>()
-        if (forward != null) {
-            for (node in forward.nodeList) {
-                censor(node.messageChain)
-            }
+        for (node in (message.firstIsInstanceOrNull<ForwardMessage>() ?: return).nodeList) {
+            censor(node.messageChain)
         }
     }
 
-    private suspend fun GroupMessageEvent.manage(result: ContentCensorResult) {
+    private suspend fun GroupMessageEvent.manage(json: JSONObject) {
+        val result = try {
+            ContentCensorResult.parser(json)
+        } catch (cause: Throwable) {
+            logger.warning({ "审核结果解析错误" }, cause)
+            return
+        }
         when (result.conclusionType) {
             1 -> {
                 // 1.合规
