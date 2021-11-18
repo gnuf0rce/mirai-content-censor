@@ -13,7 +13,9 @@ import org.json.*
 object AntiPornListener : SimpleListenerHost() {
 
     @EventHandler
-    suspend fun GroupMessageEvent.handle() = censor(message = message)
+    suspend fun GroupMessageEvent.handle() {
+        if (group.botAsMember.permission > sender.permission) censor(message = message)
+    }
 
     private suspend fun GroupMessageEvent.censor(message: MessageChain) {
         // Text Censor
