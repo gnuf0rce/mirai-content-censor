@@ -1,6 +1,7 @@
 package io.github.gnuf0rce.mirai.plugin
 
 import com.baidu.aip.contentcensor.*
+import net.mamoe.mirai.console.util.*
 import net.mamoe.mirai.console.util.ContactUtils.render
 import net.mamoe.mirai.event.*
 import net.mamoe.mirai.event.events.*
@@ -40,6 +41,7 @@ object AntiPornListener : SimpleListenerHost() {
         }
     }
 
+    @OptIn(ConsoleExperimentalApi::class)
     private suspend fun GroupMessageEvent.manage(json: JSONObject) {
         val result = try {
             ContentCensorResult.parser(json)
@@ -53,18 +55,14 @@ object AntiPornListener : SimpleListenerHost() {
             }
             2 -> {
                 // 2.不合规
-                logger.info {
-                    "${sender.render()} 消息不合规, ${result.data.flatMap(ContentCensorData::hits)}"
-                }
+                logger.info { "${sender.render()} 消息不合规, ${result.data.flatMap(ContentCensorData::hits)}" }
                 message.recall()
                 sender.mute(config.mute)
                 group.sendMessage(At(sender) + result.data.joinToString { it.msg })
             }
             3 -> {
                 // 3.疑似
-                logger.info {
-                    "${sender.render()} 消息疑似, ${result.data.flatMap(ContentCensorData::hits)}"
-                }
+                logger.info { "${sender.render()} 消息疑似, ${result.data.flatMap(ContentCensorData::hits)}" }
                 message.recall()
                 group.sendMessage(At(sender) + result.data.joinToString { it.msg })
             }
