@@ -87,3 +87,7 @@ data class ContentCensorHit(
     @SerialName("words")
     val words: List<String>
 )
+
+fun ContentCensorResult.render() = data.joinToString { record ->
+    "${record.msg}: ${record.hits.map { "(${it.datasetName}, ${it.probability}, ${it.words})" }}"
+}
