@@ -56,8 +56,8 @@ data class ContentCensorResult(
     companion object {
         @OptIn(ExperimentalSerializationApi::class)
         fun parser(json: JSONObject): ContentCensorResult {
-            check("error_code" !in json.keys().asSequence()) { "审核API错误, ${toString()}" }
-            return JsonParser.decodeFromString(toString())
+            check("error_code" !in json.keys().asSequence()) { "审核API错误, $json" }
+            return JsonParser.decodeFromString(json.toString())
         }
     }
 }
