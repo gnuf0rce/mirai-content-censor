@@ -1,10 +1,8 @@
 package io.github.gnuf0rce.mirai.plugin
 
-import com.baidu.aip.contentcensor.AipContentCensor
-import io.github.gnuf0rce.mirai.plugin.data.ContentCensorConfig
-import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription
-import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
-import net.mamoe.mirai.console.util.ConsoleExperimentalApi
+import io.github.gnuf0rce.mirai.plugin.data.*
+import net.mamoe.mirai.console.plugin.jvm.*
+import net.mamoe.mirai.event.*
 
 object MiraiAntiPornPlugin : KotlinPlugin(
     JvmPluginDescription("io.github.gnuf0rce.anti-porn", "1.0.0-dev-1") {
@@ -12,24 +10,12 @@ object MiraiAntiPornPlugin : KotlinPlugin(
         author("cssxsh")
     }
 ) {
-    val client: AipContentCensor by lazy {
-        runCatching {
-            ContentCensorConfig.reload()
-            AipContentCensor(config = ContentCensorConfig)
-        }.onFailure {
-            logger.warning(it)
-        }.getOrThrow()
-    }
 
-    @ConsoleExperimentalApi
     override fun onEnable() {
-        ContentCensorConfig.reload()
-
-        AntiPornSubscriber.start()
+        AntiPornListener.registerTo(globalEventChannel())
     }
 
-    @ConsoleExperimentalApi
     override fun onDisable() {
-        AntiPornSubscriber.stop()
+        AntiPornListener.cancelAll()
     }
 }

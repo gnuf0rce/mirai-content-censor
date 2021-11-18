@@ -1,9 +1,6 @@
 package io.github.gnuf0rce.mirai.plugin.data
 
-import net.mamoe.mirai.console.data.ReadOnlyPluginConfig
-import net.mamoe.mirai.console.data.ValueDescription
-import net.mamoe.mirai.console.data.ValueName
-import net.mamoe.mirai.console.data.value
+import net.mamoe.mirai.console.data.*
 
 object ContentCensorConfig : ReadOnlyPluginConfig("ContentCensor"), AipClientConfig, HandleConfig {
     @ValueName("app_id")
@@ -27,7 +24,7 @@ object ContentCensorConfig : ReadOnlyPluginConfig("ContentCensor"), AipClientCon
     override val socketTimeoutInMillis: Int by value(3000)
 
     @ValueName("proxy")
-    @ValueDescription("百度AI客户端 代理, 格式 http://127.0.0.1:80 或 socket://127.0.0.1:1080")
+    @ValueDescription("百度AI客户端 代理, 格式 http://127.0.0.1:8080 或 socket://127.0.0.1:1080")
     override val proxy: String by value("")
 
     @ValueName("mute")
