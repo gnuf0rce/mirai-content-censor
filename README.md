@@ -19,10 +19,10 @@
 ### 审核内容
 
 位于 `config/ContentCensor.yml`  
-1. `mute` 禁言时间，默认1分钟
+1. `mute` 禁言时间，单位秒，默认1分钟
 2. `plain` 是否检查文本，默认 true
-2. `image` 是否检查图片，默认 false
-2. `audio` 是否检查语音，默认 false
+3. `image` 是否检查图片，默认 false
+4. `audio` 是否检查语音，默认 false
 
 ## 安装
 
