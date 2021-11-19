@@ -16,7 +16,9 @@ repositories {
 }
 
 dependencies {
-    implementation("com.baidu.aip:java-sdk:4.16.2")
+    // implementation("com.baidu.aip:java-sdk:4.16.2")
+    implementation("xyz.cssxsh.baidu:baidu-oauth:2.0.1")
+    implementation("xyz.cssxsh.baidu:baidu-aip:2.0.1")
     testImplementation(kotlin("test", "1.5.31"))
 }
 

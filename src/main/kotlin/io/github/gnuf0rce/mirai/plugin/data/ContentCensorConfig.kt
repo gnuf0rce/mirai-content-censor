@@ -3,13 +3,17 @@ package io.github.gnuf0rce.mirai.plugin.data
 import net.mamoe.mirai.console.data.*
 
 object ContentCensorConfig : ReadOnlyPluginConfig("ContentCensor"), AipClientConfig, HandleConfig {
+    @ValueName("app_name")
+    @ValueDescription("百度AI客户端 APP_NAME")
+    override val appName: String by value("")
+
     @ValueName("app_id")
     @ValueDescription("百度AI客户端 APP_ID")
-    override val appId: String by value("")
+    override val appId: Long by value(0L)
 
     @ValueName("api_key")
     @ValueDescription("百度AI客户端 API_KEY")
-    override val apiKey: String by value("")
+    override val appKey: String by value("")
 
     @ValueName("secret_key")
     @ValueDescription("百度AI客户端 SECRET_KEY")
@@ -17,11 +21,11 @@ object ContentCensorConfig : ReadOnlyPluginConfig("ContentCensor"), AipClientCon
 
     @ValueName("connection_timeout_in_millis")
     @ValueDescription("百度AI客户端 连接超时 毫秒")
-    override val connectionTimeoutInMillis: Int by value(3000)
+    override val connectionTimeoutInMillis: Long by value(3000L)
 
     @ValueName("socket_timeout_in_millis")
     @ValueDescription("百度AI客户端 端口超时 毫秒")
-    override val socketTimeoutInMillis: Int by value(3000)
+    override val socketTimeoutInMillis: Long by value(3000L)
 
     @ValueName("proxy")
     @ValueDescription("百度AI客户端 代理, 格式 http://127.0.0.1:8080 或 socket://127.0.0.1:1080")

@@ -1,93 +1,104 @@
 package io.github.gnuf0rce.mirai.plugin
 
-import com.baidu.aip.contentcensor.*
 import io.github.gnuf0rce.mirai.plugin.data.*
-import kotlinx.serialization.*
-import kotlinx.serialization.json.*
-import org.json.*
+import io.ktor.client.*
+import io.ktor.client.engine.okhttp.*
+import io.ktor.client.features.*
+import io.ktor.http.*
+import kotlinx.coroutines.*
+import xyz.cssxsh.baidu.*
+import xyz.cssxsh.baidu.aip.*
+import xyz.cssxsh.baidu.aip.censor.*
+import xyz.cssxsh.baidu.exption.*
 import java.net.*
 
-internal val censor by lazy {
-    MiraiAntiPornPlugin.runCatching {
-        ContentCensorConfig.reload()
-        AipContentCensor(config = ContentCensorConfig)
-    }.onFailure {
-        MiraiAntiPornPlugin.logger.warning(it)
-    }.getOrThrow()
+internal val censor: AipContentCensor by lazy {
+    AipContentCensor(client = object : BaiduApiClient(config = config) {
+        // TODO: no opt null
+        override var accessTokenValue: String?
+            get() = ContentCensorToken.accessToken.takeIf { it.isNotBlank() }
+            set(value) { ContentCensorToken.accessToken = value.orEmpty() }
+
+        override var refreshTokenValue: String?
+            get() = ContentCensorToken.refreshToken.takeIf { it.isNotBlank() }
+            set(value) { ContentCensorToken.refreshToken = value.orEmpty() }
+
+        override val accessToken: String
+            get() {
+                return try {
+                    super.accessToken
+                } catch (cause: NotTokenException) {
+                    runBlocking {
+                        refresh().accessToken
+                    }
+                }
+            }
+        override val client: HttpClient = super.client.config {
+            install(HttpTimeout) {
+                socketTimeoutMillis = ContentCensorConfig.socketTimeoutInMillis
+                connectTimeoutMillis = ContentCensorConfig.connectionTimeoutInMillis
+                requestTimeoutMillis = ContentCensorConfig.connectionTimeoutInMillis
+            }
+            engine {
+                this as OkHttpConfig
+                config {
+                    if (ContentCensorConfig.proxy.isNotBlank()) proxy(with(Url(ContentCensorConfig.proxy)) {
+                        val type = when (protocol) {
+                            URLProtocol.SOCKS -> Proxy.Type.SOCKS
+                            URLProtocol.HTTP -> Proxy.Type.HTTP
+                            else -> throw IllegalArgumentException("Proxy: $this")
+                        }
+                        Proxy(type, InetSocketAddress(host, port))
+                    })
+                }
+            }
+        }
+    })
 }
 
 internal val logger get() = MiraiAntiPornPlugin.logger
 
-internal val config: HandleConfig get() = ContentCensorConfig
+internal val config get() = ContentCensorConfig
 
-internal fun AipContentCensor(config: AipClientConfig): AipContentCensor = with(config) {
-    check(listOf(appId, apiKey, secretKey).none(String::isBlank)) {
-        "请按照文档步骤申请API_KEY，并填入ContentCensor配置文件 https://ai.baidu.com/ai-doc/ANTIPORN/Wkhu9d5iy"
+private fun CensorItem.render(): String {
+    return when (this) {
+        is CensorItem.Star -> "(${datasetName}, ${probability}, ${name})"
+        is CensorItem.Hit -> "(${datasetName}, ${probability}, ${words})"
+        is CensorResult.Image.Record -> "(${datasetName}, ${probability}, ${(stars + hits).joinToString { it.render() }})"
     }
-    AipContentCensor(appId, apiKey, secretKey).apply {
-        setConnectionTimeoutInMillis(connectionTimeoutInMillis)
-        setSocketTimeoutInMillis(socketTimeoutInMillis)
-        val uri = URI(proxy)
-        when (uri.scheme) {
-            "http" -> setHttpProxy(uri.host, uri.port.takeIf { it > 0 } ?: 80)
-            "socket" -> setSocketProxy(uri.host, uri.port.takeIf { it > 0 } ?: 1080)
+}
+
+fun CensorResult.render(): String {
+    return when (this) {
+        is CensorResult.Image -> data.joinToString { record ->
+            "${record.message}: ${(record.stars + record.hits).map { it.render() }}"
+        }
+        is CensorResult.Text -> data.joinToString { record ->
+            "${record.message}: ${record.hits.map { it.render() }}"
+        }
+        is CensorResult.Video -> frames.joinToString { record ->
+            "${record.frameThumbnailUrl}: ${record.conclusion}"
+        }
+        is CensorResult.Voice -> data.joinToString { record ->
+            "${record.text}: ${record.conclusion}"
         }
     }
 }
 
-private val JsonParser = Json {
-    ignoreUnknownKeys = true
-}
-
-@Serializable
-data class ContentCensorResult(
-    @SerialName("conclusion")
-    val conclusion: String,
-    @SerialName("conclusionType")
-    val conclusionType: Int,
-    @SerialName("data")
-    val `data`: List<ContentCensorData> = emptyList(),
-    @SerialName("log_id")
-    val logId: Long,
-    @SerialName("isHitMd5")
-    val isHitMd5: Boolean = false
-) {
-
-    companion object {
-        @OptIn(ExperimentalSerializationApi::class)
-        fun parser(json: JSONObject): ContentCensorResult {
-            check("error_code" !in json.keys().asSequence()) { "审核API错误, $json" }
-            return JsonParser.decodeFromString(json.toString())
-        }
+fun CensorResult.count(): Int {
+    return when (this) {
+        is CensorResult.Image -> data.size
+        is CensorResult.Text -> data.size
+        is CensorResult.Video -> frames.size
+        is CensorResult.Voice -> data.size
     }
 }
 
-@Serializable
-data class ContentCensorData(
-    @SerialName("conclusion")
-    val conclusion: String,
-    @SerialName("conclusionType")
-    val conclusionType: Int,
-    @SerialName("hits")
-    val hits: List<ContentCensorHit> = emptyList(),
-    @SerialName("msg")
-    val msg: String,
-    @SerialName("subType")
-    val subType: Int,
-    @SerialName("type")
-    val type: Int
-)
-
-@Serializable
-data class ContentCensorHit(
-    @SerialName("datasetName")
-    val datasetName: String,
-    @SerialName("probability")
-    val probability: Double,
-    @SerialName("words")
-    val words: List<String>
-)
-
-fun ContentCensorResult.render() = data.joinToString { record ->
-    "${record.msg}: ${record.hits.map { "(${it.datasetName}, ${it.probability}, ${it.words})" }}"
+fun CensorResult.message(): String {
+    return when (this) {
+        is CensorResult.Image -> data.joinToString { it.message }
+        is CensorResult.Text -> data.joinToString { it.message }
+        is CensorResult.Video -> frames.joinToString { record -> record.data.joinToString { it.message } }
+        is CensorResult.Voice -> data.joinToString { record -> record.auditData.joinToString { it.message } }
+    }
 }

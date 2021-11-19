@@ -1,11 +1,9 @@
 package io.github.gnuf0rce.mirai.plugin.data
 
+import xyz.cssxsh.baidu.*
 
-interface AipClientConfig {
-    val appId: String
-    val apiKey: String
-    val secretKey: String
-    val connectionTimeoutInMillis: Int
-    val socketTimeoutInMillis: Int
+interface AipClientConfig: BaiduAuthConfig {
+    val connectionTimeoutInMillis: Long
+    val socketTimeoutInMillis: Long
     val proxy: String
 }

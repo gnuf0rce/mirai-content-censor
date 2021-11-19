@@ -1,6 +1,5 @@
 package io.github.gnuf0rce.mirai.plugin
 
-import com.baidu.aip.contentcensor.*
 import net.mamoe.mirai.console.util.*
 import net.mamoe.mirai.console.util.ContactUtils.render
 import net.mamoe.mirai.event.*
@@ -9,7 +8,7 @@ import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import net.mamoe.mirai.message.data.MessageSource.Key.recall
 import net.mamoe.mirai.utils.*
-import org.json.*
+import xyz.cssxsh.baidu.aip.censor.*
 import kotlin.coroutines.*
 import kotlin.coroutines.cancellation.*
 
@@ -17,24 +16,28 @@ object AntiPornListener : SimpleListenerHost() {
 
     @EventHandler
     suspend fun GroupMessageEvent.handle() {
-        if (group.botAsMember.permission > sender.permission) censor(message = message)
+        if (group.botAsMember.permission > sender.permission) {
+            censor(message = message)
+        }
     }
 
     private suspend fun GroupMessageEvent.censor(message: MessageChain) {
         // Text Censor
         if (message.content.isNotBlank() && config.plain) {
-            manage(censor.textCensorUserDefined(message.content))
+            manage(censor.text(plain = message.content))
         }
         // Image Censor
         if (config.image) {
             for (image in message.filterIsInstance<Image>()) {
-                manage(censor.imageCensorUserDefined(image.queryUrl(), EImgType.URL, null))
+                manage(censor.image(url = image.queryUrl(), gif = image.imageType == ImageType.GIF))
             }
         }
         // Audio Censor
         if (config.audio) {
             for (audio in message.filterIsInstance<OnlineAudio>()) {
-                manage(censor.voiceCensorUserDefined(audio.urlForDownload, EImgType.URL, audio.codec.formatName, null))
+                val url = audio.urlForDownload
+                val format = audio.codec.formatName
+                manage(censor.voice(url = url, format = format, rawText = true, split = false))
             }
         }
         // Forward
@@ -44,33 +47,28 @@ object AntiPornListener : SimpleListenerHost() {
     }
 
     @OptIn(ConsoleExperimentalApi::class)
-    private suspend fun GroupMessageEvent.manage(json: JSONObject) {
-        val result = try {
-            ContentCensorResult.parser(json)
-        } catch (cause: Throwable) {
-            logger.warning({ "审核结果解析错误" }, cause)
-            return
-        }
+    private suspend fun GroupMessageEvent.manage(result: CensorResult) {
         when (result.conclusionType) {
-            1 -> {
+            ConclusionType.COMPLIANCE -> {
                 // 1.合规
             }
-            2 -> {
+            ConclusionType.NON_COMPLIANCE -> {
                 // 2.不合规
                 logger.info { "${sender.render()} 消息不合规, ${result.render()}" }
-                sender.mute(maxOf(config.mute * result.data.size, config.mute))
-                group.sendMessage(At(sender) + result.data.joinToString { it.msg })
+                sender.mute(maxOf(config.mute * result.count(), config.mute))
+                group.sendMessage(At(sender) + result.message())
                 message.recall()
             }
-            3 -> {
+            ConclusionType.SUSPECTED -> {
                 // 3.疑似
                 logger.info { "${sender.render()} 消息疑似, ${result.render()}" }
                 message.recall()
-                group.sendMessage(At(sender) + result.data.joinToString { it.msg })
+                group.sendMessage(At(sender) + result.message())
             }
-            else -> {
+            ConclusionType.NONE, ConclusionType.FAILURE -> {
+                // 0.请求失败
                 // 4.审核失败
-                logger.warning { result.conclusion }
+                logger.warning { result.toString() }
             }
         }
     }
