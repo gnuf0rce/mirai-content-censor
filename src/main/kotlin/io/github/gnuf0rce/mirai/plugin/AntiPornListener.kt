@@ -10,6 +10,8 @@ import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import net.mamoe.mirai.message.data.MessageSource.Key.recall
 import net.mamoe.mirai.utils.*
 import org.json.*
+import kotlin.coroutines.*
+import kotlin.coroutines.cancellation.*
 
 object AntiPornListener : SimpleListenerHost() {
 
@@ -56,9 +58,9 @@ object AntiPornListener : SimpleListenerHost() {
             2 -> {
                 // 2.不合规
                 logger.info { "${sender.render()} 消息不合规, ${result.render()}" }
-                message.recall()
                 sender.mute(maxOf(config.mute * result.data.size, config.mute))
                 group.sendMessage(At(sender) + result.data.joinToString { it.msg })
+                message.recall()
             }
             3 -> {
                 // 3.疑似
@@ -69,6 +71,20 @@ object AntiPornListener : SimpleListenerHost() {
             else -> {
                 // 4.审核失败
                 logger.warning { result.conclusion }
+            }
+        }
+    }
+
+    override fun handleException(context: CoroutineContext, exception: Throwable) {
+        when (exception) {
+            is CancellationException -> {
+                // ...
+            }
+            is ExceptionInEventHandlerException -> {
+                logger.warning({ "AntiPornListener handle 出错" }, exception.cause)
+            }
+            else -> {
+                logger.warning({ "AntiPornListener 出错" }, exception)
             }
         }
     }
