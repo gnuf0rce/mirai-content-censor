@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "io.github.gnuf0rce"
-version = "1.0.1"
+version = "1.1.0"
 
 repositories {
     mavenLocal()
@@ -20,6 +20,10 @@ dependencies {
     implementation("xyz.cssxsh.baidu:baidu-oauth:2.0.1")
     implementation("xyz.cssxsh.baidu:baidu-aip:2.0.1")
     testImplementation(kotlin("test", "1.5.31"))
+}
+
+java {
+    disableAutoTargetJvm()
 }
 
 tasks {
