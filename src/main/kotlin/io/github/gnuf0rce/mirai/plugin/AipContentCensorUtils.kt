@@ -64,23 +64,28 @@ internal val censor: AipContentCensor by lazy {
             }
         }
 
-        override val client: HttpClient = super.client.config {
-            install(HttpTimeout) {
-                socketTimeoutMillis = ContentCensorConfig.socketTimeoutInMillis
-                connectTimeoutMillis = ContentCensorConfig.connectionTimeoutInMillis
-                requestTimeoutMillis = ContentCensorConfig.requestTimeoutMillis
+        override val client: HttpClient = with(ContentCensorConfig) {
+            if (socketTimeoutInMillis < 15_000 || connectionTimeoutInMillis < 15_000 || requestTimeoutInMillis < 15_000) {
+                logger.warning { "超时时间请设置超过 15_000 ms " }
             }
-            engine {
-                this as OkHttpConfig
-                config {
-                    if (ContentCensorConfig.proxy.isNotBlank()) proxy(with(Url(ContentCensorConfig.proxy)) {
-                        val type = when (protocol) {
-                            URLProtocol.SOCKS -> Proxy.Type.SOCKS
-                            URLProtocol.HTTP -> Proxy.Type.HTTP
-                            else -> throw IllegalArgumentException("Proxy: $this")
-                        }
-                        Proxy(type, InetSocketAddress(host, port))
-                    })
+            super.client.config {
+                install(HttpTimeout) {
+                    socketTimeoutMillis = socketTimeoutInMillis
+                    connectTimeoutMillis = connectionTimeoutInMillis
+                    requestTimeoutMillis = requestTimeoutInMillis
+                }
+                engine {
+                    this as OkHttpConfig
+                    config {
+                        if (proxyUrl.isNotBlank()) proxy(with(Url(proxyUrl)) {
+                            val type = when (protocol) {
+                                URLProtocol.SOCKS -> Proxy.Type.SOCKS
+                                URLProtocol.HTTP -> Proxy.Type.HTTP
+                                else -> throw IllegalArgumentException("Proxy: $this")
+                            }
+                            Proxy(type, InetSocketAddress(host, port))
+                        })
+                    }
                 }
             }
         }
