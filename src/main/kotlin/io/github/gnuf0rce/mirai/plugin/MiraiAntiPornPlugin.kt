@@ -1,6 +1,8 @@
 package io.github.gnuf0rce.mirai.plugin
 
+import io.github.gnuf0rce.mirai.plugin.command.*
 import io.github.gnuf0rce.mirai.plugin.data.*
+import net.mamoe.mirai.console.command.CommandManager.INSTANCE.register
 import net.mamoe.mirai.console.plugin.jvm.*
 import net.mamoe.mirai.event.*
 
@@ -15,6 +17,7 @@ object MiraiAntiPornPlugin : KotlinPlugin(
         ContentCensorConfig.reload()
         ContentCensorToken.reload()
         AntiPornListener.registerTo(globalEventChannel())
+        AntiPornCensorCommand.register()
     }
 
     override fun onDisable() {

@@ -7,6 +7,8 @@ import io.ktor.client.features.*
 import io.ktor.http.*
 import io.ktor.utils.io.errors.*
 import kotlinx.coroutines.*
+import net.mamoe.mirai.message.data.*
+import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import net.mamoe.mirai.utils.*
 import xyz.cssxsh.baidu.*
 import xyz.cssxsh.baidu.aip.*
@@ -88,6 +90,32 @@ internal val censor: AipContentCensor by lazy {
 internal val logger get() = MiraiAntiPornPlugin.logger
 
 internal val config get() = ContentCensorConfig
+
+internal suspend fun censor(message: MessageChain): CensorResult? {
+    // Text Censor
+    if (message.content.isNotBlank() && config.plain) {
+        return censor.text(plain = message.content)
+    }
+    // Image Censor
+    if (config.image) {
+        for (image in message.filterIsInstance<Image>()) {
+            return censor.image(url = image.queryUrl(), gif = image.imageType == ImageType.GIF)
+        }
+    }
+    // Audio Censor
+    if (config.audio) {
+        for (audio in message.filterIsInstance<OnlineAudio>()) {
+            val url = audio.urlForDownload
+            val format = audio.codec.formatName
+            return censor.voice(url = url, format = format, rawText = true, split = false)
+        }
+    }
+    // Forward
+    for (node in (message.firstIsInstanceOrNull<ForwardMessage>() ?: return null).nodeList) {
+        return censor(node.messageChain)
+    }
+    return null
+}
 
 private fun CensorItem.render(): String {
     return when (this) {

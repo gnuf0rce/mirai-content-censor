@@ -5,7 +5,6 @@ import net.mamoe.mirai.console.util.ContactUtils.render
 import net.mamoe.mirai.event.*
 import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.message.data.*
-import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import net.mamoe.mirai.message.data.MessageSource.Key.recall
 import net.mamoe.mirai.utils.*
 import xyz.cssxsh.baidu.aip.censor.*
@@ -17,32 +16,7 @@ object AntiPornListener : SimpleListenerHost() {
     @EventHandler
     suspend fun GroupMessageEvent.handle() {
         if (group.botAsMember.permission > sender.permission) {
-            censor(message = message)
-        }
-    }
-
-    private suspend fun GroupMessageEvent.censor(message: MessageChain) {
-        // Text Censor
-        if (message.content.isNotBlank() && config.plain) {
-            manage(censor.text(plain = message.content))
-        }
-        // Image Censor
-        if (config.image) {
-            for (image in message.filterIsInstance<Image>()) {
-                manage(censor.image(url = image.queryUrl(), gif = image.imageType == ImageType.GIF))
-            }
-        }
-        // Audio Censor
-        if (config.audio) {
-            for (audio in message.filterIsInstance<OnlineAudio>()) {
-                val url = audio.urlForDownload
-                val format = audio.codec.formatName
-                manage(censor.voice(url = url, format = format, rawText = true, split = false))
-            }
-        }
-        // Forward
-        for (node in (message.firstIsInstanceOrNull<ForwardMessage>() ?: return).nodeList) {
-            censor(node.messageChain)
+            manage(result = censor(message = message) ?: return)
         }
     }
 
