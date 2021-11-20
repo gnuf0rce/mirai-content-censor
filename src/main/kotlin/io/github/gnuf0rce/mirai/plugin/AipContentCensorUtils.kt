@@ -5,23 +5,24 @@ import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
 import io.ktor.client.features.*
 import io.ktor.http.*
+import io.ktor.utils.io.errors.*
 import kotlinx.coroutines.*
+import net.mamoe.mirai.utils.*
 import xyz.cssxsh.baidu.*
 import xyz.cssxsh.baidu.aip.*
 import xyz.cssxsh.baidu.aip.censor.*
-import xyz.cssxsh.baidu.exption.*
+import xyz.cssxsh.baidu.exception.*
 import java.net.*
+import java.time.*
 
 internal val censor: AipContentCensor by lazy {
     AipContentCensor(client = object : BaiduApiClient(config = config) {
-        // TODO: no opt null
-        override var accessTokenValue: String?
-            get() = ContentCensorToken.accessToken.takeIf { it.isNotBlank() }
-            set(value) { ContentCensorToken.accessToken = value.orEmpty() }
 
-        override var refreshTokenValue: String?
-            get() = ContentCensorToken.refreshToken.takeIf { it.isNotBlank() }
-            set(value) { ContentCensorToken.refreshToken = value.orEmpty() }
+        override var expires: OffsetDateTime by ContentCensorToken::expires
+
+        override var accessTokenValue: String by ContentCensorToken::accessToken
+
+        override var refreshTokenValue: String by ContentCensorToken::refreshToken
 
         override val accessToken: String
             get() {
@@ -29,15 +30,43 @@ internal val censor: AipContentCensor by lazy {
                     super.accessToken
                 } catch (cause: NotTokenException) {
                     runBlocking {
-                        refresh().accessToken
+                        if (refreshTokenValue.isBlank()) {
+                            token().accessToken
+                        } else {
+                            refresh().accessToken
+                        }
                     }
                 }
             }
+
+        override val refreshToken: String
+            get() {
+                return try {
+                    super.refreshToken
+                } catch (cause: NotTokenException) {
+                    runBlocking {
+                        token().refreshToken
+                    }
+                }
+            }
+
+        override val apiIgnore: suspend (Throwable) -> Boolean = { throwable ->
+            when (throwable) {
+                is HttpRequestTimeoutException,
+                is IOException
+                -> {
+                    logger.warning { "AipContentCensor Ignore: $throwable" }
+                    true
+                }
+                else -> false
+            }
+        }
+
         override val client: HttpClient = super.client.config {
             install(HttpTimeout) {
                 socketTimeoutMillis = ContentCensorConfig.socketTimeoutInMillis
                 connectTimeoutMillis = ContentCensorConfig.connectionTimeoutInMillis
-                requestTimeoutMillis = ContentCensorConfig.connectionTimeoutInMillis
+                requestTimeoutMillis = ContentCensorConfig.requestTimeoutMillis
             }
             engine {
                 this as OkHttpConfig

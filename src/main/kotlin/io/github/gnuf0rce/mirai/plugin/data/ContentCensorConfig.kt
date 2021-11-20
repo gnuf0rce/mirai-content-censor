@@ -27,6 +27,10 @@ object ContentCensorConfig : ReadOnlyPluginConfig("ContentCensor"), AipClientCon
     @ValueDescription("百度AI客户端 端口超时 毫秒")
     override val socketTimeoutInMillis: Long by value(3000L)
 
+    @ValueName("request_timeout_millis")
+    @ValueDescription("百度AI客户端 端口超时 毫秒")
+    override val requestTimeoutMillis: Long by value(180_000L)
+
     @ValueName("proxy")
     @ValueDescription("百度AI客户端 代理, 格式 http://127.0.0.1:8080 或 socket://127.0.0.1:1080")
     override val proxy: String by value("")

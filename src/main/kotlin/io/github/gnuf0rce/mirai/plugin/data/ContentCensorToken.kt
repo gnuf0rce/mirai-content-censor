@@ -1,11 +1,21 @@
 package io.github.gnuf0rce.mirai.plugin.data
 
 import net.mamoe.mirai.console.data.*
+import net.mamoe.mirai.console.data.SerializableValue.Companion.serializableValueWith
+import net.mamoe.mirai.console.internal.data.*
+import xyz.cssxsh.baidu.*
+import java.time.*
 
-object ContentCensorToken : AutoSavePluginData("ContentCensorToken") {
+internal object ContentCensorToken : AutoSavePluginData("ContentCensorToken"), BaiduAuthToken {
+    @ValueName("expires")
+    @Suppress("INVISIBLE_REFERENCE", "INVISIBLE_MEMBER")
+    override var expires: OffsetDateTime by LazyReferenceValueImpl<OffsetDateTime>()
+        .serializableValueWith(OffsetDateTimeSerializer)
+        .apply { value = OffsetDateTime.MIN }
+
     @ValueName("access_token")
-    internal var accessToken: String by value("")
+    override var accessToken: String by value("")
 
     @ValueName("refresh_token")
-    internal var refreshToken: String by value("")
+    override var refreshToken: String by value("")
 }
