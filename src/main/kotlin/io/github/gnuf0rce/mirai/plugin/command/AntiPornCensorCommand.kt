@@ -15,7 +15,13 @@ object AntiPornCensorCommand: SimpleCommand(
         val message = with(fromEvent) {
             message.findIsInstance<QuoteReply>()?.source?.originalMessage ?: message
         }
-        val result = censor(message)
-        sendMessage("${result?.conclusion}: ${result?.render()}")
+        val reply = with(censor(message)) {
+            if (this == null) {
+                "没有可以检测的内容"
+            } else {
+                "${conclusion}: ${render()}"
+            }
+        }
+        sendMessage(reply)
     }
 }
