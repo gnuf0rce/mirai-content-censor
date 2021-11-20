@@ -11,6 +11,7 @@ object AntiPornCensorCommand: SimpleCommand(
 
     @Handler
     suspend fun CommandSenderOnMessage<*>.handle() {
-        sendMessage(censor(fromEvent.message)?.render() ?: "没有可以解析的内容")
+        val result = censor(fromEvent.message)
+        sendMessage("${result?.conclusion}: ${result?.render() ?: "没有可以解析的内容"}")
     }
 }
