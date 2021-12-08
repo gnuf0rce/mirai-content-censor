@@ -1,5 +1,6 @@
 package io.github.gnuf0rce.mirai.plugin
 
+import io.github.gnuf0rce.mirai.plugin.data.*
 import net.mamoe.mirai.console.permission.PermissionService.Companion.testPermission
 import net.mamoe.mirai.console.permission.PermitteeId.Companion.permitteeId
 import net.mamoe.mirai.console.util.*
@@ -33,13 +34,19 @@ object AntiPornListener : SimpleListenerHost() {
             ConclusionType.NON_COMPLIANCE -> {
                 // 2.不合规
                 logger.info { "${sender.render()} 消息不合规, ${result.render()}" }
-                sender.mute(maxOf(config.mute * result.count(), config.mute))
-                group.sendMessage(At(sender) + result.message())
+                sender.mute(config.mute * result.count().coerceAtLeast(1))
+                ContentCensorHistory.records.compute(sender.id) { _, list ->
+                    list.orEmpty() + message.serializeToMiraiCode()
+                }
                 message.recall()
+                group.sendMessage(At(sender) + result.message())
             }
             ConclusionType.SUSPECTED -> {
                 // 3.疑似
                 logger.info { "${sender.render()} 消息疑似, ${result.render()}" }
+                ContentCensorHistory.records.compute(sender.id) { _, list ->
+                    list.orEmpty() + message.serializeToMiraiCode()
+                }
                 message.recall()
                 group.sendMessage(At(sender) + result.message())
             }

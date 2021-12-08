@@ -17,6 +17,7 @@ object MiraiAntiPornPlugin : KotlinPlugin(
     override fun onEnable() {
         ContentCensorConfig.reload()
         ContentCensorToken.reload()
+        ContentCensorHistory.reload()
         AntiPornListener.registerTo(globalEventChannel())
         AntiPornCensorCommand.register()
 
