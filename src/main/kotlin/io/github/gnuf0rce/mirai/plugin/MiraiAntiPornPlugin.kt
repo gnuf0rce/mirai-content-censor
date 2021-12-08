@@ -20,6 +20,7 @@ object MiraiAntiPornPlugin : KotlinPlugin(
         ContentCensorHistory.reload()
         AntiPornListener.registerTo(globalEventChannel())
         AntiPornCensorCommand.register()
+        AntiPornRecordCommand.register()
 
         logger.info { "关闭审查请赋予权限 ${NoCensorPermission.id} 于用户" }
     }
