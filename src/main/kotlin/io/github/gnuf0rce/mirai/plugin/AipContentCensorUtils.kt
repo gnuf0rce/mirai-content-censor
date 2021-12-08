@@ -7,6 +7,7 @@ import io.ktor.client.features.*
 import io.ktor.http.*
 import io.ktor.utils.io.errors.*
 import kotlinx.coroutines.*
+import net.mamoe.mirai.console.permission.*
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import net.mamoe.mirai.utils.*
@@ -90,6 +91,14 @@ internal val censor: AipContentCensor by lazy {
             }
         }
     })
+}
+
+internal val NoCensorPermission: Permission by lazy {
+    PermissionService.INSTANCE.register(
+        id = MiraiAntiPornPlugin.permissionId("no-censor"),
+        description = "跳过检测",
+        parent = MiraiAntiPornPlugin.parentPermission
+    )
 }
 
 internal val logger get() = MiraiAntiPornPlugin.logger

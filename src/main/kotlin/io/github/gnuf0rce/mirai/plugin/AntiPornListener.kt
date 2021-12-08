@@ -1,5 +1,7 @@
 package io.github.gnuf0rce.mirai.plugin
 
+import net.mamoe.mirai.console.permission.PermissionService.Companion.testPermission
+import net.mamoe.mirai.console.permission.PermitteeId.Companion.permitteeId
 import net.mamoe.mirai.console.util.*
 import net.mamoe.mirai.console.util.ContactUtils.render
 import net.mamoe.mirai.event.*
@@ -15,7 +17,9 @@ object AntiPornListener : SimpleListenerHost() {
 
     @EventHandler
     suspend fun GroupMessageEvent.handle() {
-        if (group.botAsMember.permission > sender.permission) {
+        if (NoCensorPermission.testPermission(sender.permitteeId).not()
+            && group.botAsMember.permission > sender.permission
+        ) {
             manage(result = censor(message = message) ?: return)
         }
     }

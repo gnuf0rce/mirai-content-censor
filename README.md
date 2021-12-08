@@ -26,6 +26,10 @@
 3. `image` 是否检查图片，默认 false
 4. `audio` 是否检查语音，默认 false
 
+### 避开审查
+
+拥有权限 `io.github.gnuf0rce.anti-porn:no-censor` 的用户将不会被检测
+
 ## 安装
 
 ### 手动安装
