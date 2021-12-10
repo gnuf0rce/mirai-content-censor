@@ -19,7 +19,7 @@ import java.net.*
 import java.time.*
 
 internal val censor: AipContentCensor by lazy {
-    AipContentCensor(client = object : BaiduApiClient(config = config) {
+    AipContentCensor(client = object : BaiduAipClient(config = config) {
 
         override var expires: OffsetDateTime by ContentCensorToken::expires
 
@@ -32,7 +32,7 @@ internal val censor: AipContentCensor by lazy {
                 return try {
                     super.accessToken
                 } catch (cause: NotTokenException) {
-                    runBlocking {
+                    runBlocking(MiraiAntiPornPlugin.coroutineContext) {
                         if (refreshTokenValue.isBlank()) {
                             token().accessToken
                         } else {
@@ -47,7 +47,7 @@ internal val censor: AipContentCensor by lazy {
                 return try {
                     super.refreshToken
                 } catch (cause: NotTokenException) {
-                    runBlocking {
+                    runBlocking(MiraiAntiPornPlugin.coroutineContext) {
                         token().refreshToken
                     }
                 }

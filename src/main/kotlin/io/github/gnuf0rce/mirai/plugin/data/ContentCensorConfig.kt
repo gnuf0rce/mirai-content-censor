@@ -21,11 +21,11 @@ object ContentCensorConfig : ReadOnlyPluginConfig("ContentCensor"), AipClientCon
 
     @ValueName("connection_timeout_in_millis")
     @ValueDescription("百度AI客户端 连接超时 毫秒")
-    override val connectionTimeoutInMillis: Long by value(3000L)
+    override val connectionTimeoutInMillis: Long by value(30_000L)
 
     @ValueName("socket_timeout_in_millis")
     @ValueDescription("百度AI客户端 端口超时 毫秒")
-    override val socketTimeoutInMillis: Long by value(3000L)
+    override val socketTimeoutInMillis: Long by value(30_000L)
 
     @ValueName("request_timeout_in_millis")
     @ValueDescription("百度AI客户端 端口超时 毫秒")
