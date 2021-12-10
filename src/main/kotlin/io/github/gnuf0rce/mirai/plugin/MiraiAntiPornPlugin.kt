@@ -8,7 +8,7 @@ import net.mamoe.mirai.event.*
 import net.mamoe.mirai.utils.*
 
 object MiraiAntiPornPlugin : KotlinPlugin(
-    JvmPluginDescription("io.github.gnuf0rce.anti-porn", "1.1.0") {
+    JvmPluginDescription("io.github.gnuf0rce.anti-porn", "1.1.1") {
         name("anti-porn")
         author("cssxsh")
     }

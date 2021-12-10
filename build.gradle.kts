@@ -1,11 +1,11 @@
 plugins {
     kotlin("jvm") version "1.5.31"
     kotlin("plugin.serialization") version "1.5.31"
-    id("net.mamoe.mirai-console") version "2.8.0"
+    id("net.mamoe.mirai-console") version "2.9.0-M1"
 }
 
 group = "io.github.gnuf0rce"
-version = "1.1.0"
+version = "1.1.1"
 
 mirai {
     configureShadow {
@@ -37,9 +37,8 @@ repositories {
 }
 
 dependencies {
-    // implementation("com.baidu.aip:java-sdk:4.16.2")
-    implementation("xyz.cssxsh.baidu:baidu-oauth:2.0.2")
-    implementation("xyz.cssxsh.baidu:baidu-aip:2.0.2")
+    implementation("xyz.cssxsh.baidu:baidu-oauth:2.0.3")
+    implementation("xyz.cssxsh.baidu:baidu-aip:2.0.3")
     testImplementation(kotlin("test", "1.5.31"))
 }
 
