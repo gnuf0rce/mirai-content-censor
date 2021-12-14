@@ -2,10 +2,20 @@ plugins {
     kotlin("jvm") version "1.5.31"
     kotlin("plugin.serialization") version "1.5.31"
     id("net.mamoe.mirai-console") version "2.9.0-M1"
+    id("net.mamoe.maven-central-publish") version "0.7.0"
 }
 
 group = "io.github.gnuf0rce"
-version = "1.1.1"
+version = "1.1.2"
+
+mavenCentralPublish {
+    useCentralS01()
+    singleDevGithubProject("gnuf0rce", "Mirai-AntiPorn-Plugin", "cssxsh")
+    licenseFromGitHubProject("AGPL-3.0", "master")
+    publication {
+        artifact(tasks.getByName("buildPlugin"))
+    }
+}
 
 mirai {
     configureShadow {
@@ -37,8 +47,8 @@ repositories {
 }
 
 dependencies {
-    implementation("xyz.cssxsh.baidu:baidu-oauth:2.0.3")
-    implementation("xyz.cssxsh.baidu:baidu-aip:2.0.3")
+    implementation("xyz.cssxsh.baidu:baidu-oauth:2.0.4")
+    implementation("xyz.cssxsh.baidu:baidu-aip:2.0.4")
     testImplementation(kotlin("test", "1.5.31"))
 }
 
