@@ -3,12 +3,13 @@ package io.github.gnuf0rce.mirai.plugin
 import io.github.gnuf0rce.mirai.plugin.command.*
 import io.github.gnuf0rce.mirai.plugin.data.*
 import net.mamoe.mirai.console.command.CommandManager.INSTANCE.register
+import net.mamoe.mirai.console.command.CommandManager.INSTANCE.unregister
 import net.mamoe.mirai.console.plugin.jvm.*
 import net.mamoe.mirai.event.*
 import net.mamoe.mirai.utils.*
 
 object MiraiContentCensorPlugin : KotlinPlugin(
-    JvmPluginDescription("io.github.gnuf0rce.content-censor", "1.1.2") {
+    JvmPluginDescription("io.github.gnuf0rce.content-censor", "1.2.0") {
         name("anti-porn")
         author("cssxsh")
     }
@@ -27,5 +28,7 @@ object MiraiContentCensorPlugin : KotlinPlugin(
 
     override fun onDisable() {
         MiraiContentCensorListener.cancelAll()
+        MiraiContentCensorCommand.unregister()
+        MiraiCensorRecordCommand.unregister()
     }
 }
