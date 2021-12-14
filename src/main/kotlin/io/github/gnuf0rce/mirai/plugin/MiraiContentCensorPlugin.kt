@@ -10,7 +10,7 @@ import net.mamoe.mirai.utils.*
 
 object MiraiContentCensorPlugin : KotlinPlugin(
     JvmPluginDescription("io.github.gnuf0rce.content-censor", "1.2.0") {
-        name("anti-porn")
+        name("content-censor")
         author("cssxsh")
     }
 ) {
