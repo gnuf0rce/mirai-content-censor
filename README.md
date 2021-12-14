@@ -1,10 +1,12 @@
-# [Mirai-AntiPorn-Plugin](https://github.com/gnuf0rce/Mirai-AntiPorn-Plugin)
+# [Mirai Content Censor](https://github.com/gnuf0rce/mirai-content-censor)
 
 > 基于 [Mirai Console](https://github.com/mamoe/mirai-console) 和 [百度AI内容审核](https://ai.baidu.com/ai-doc/ANTIPORN/) 的自动禁言助手
 
-[![Release](https://img.shields.io/github/v/release/gnuf0rce/Mirai-AntiPorn-Plugin)](https://github.com/gnuf0rce/Mirai-AntiPorn-Plugin/releases)
-[![Downloads](https://img.shields.io/github/downloads/gnuf0rce/Mirai-AntiPorn-Plugin/total)](https://shields.io/category/downloads)
+[![Release](https://img.shields.io/github/v/release/gnuf0rce/mirai-content-censor)](https://github.com/gnuf0rce/mirai-content-censor/releases)
+[![Downloads](https://img.shields.io/github/downloads/gnuf0rce/mirai-content-censor/total)](https://shields.io/category/downloads)
 [![MiraiForum](https://img.shields.io/badge/post-on%20MiraiForum-yellow)](https://mirai.mamoe.net/topic/293)
+
+本插件原命名 `Mirai-AntiPorn-Plugin`
 
 ## 设置
 
@@ -32,10 +34,15 @@
 
 ## 安装
 
+
+### MCL 指令安装
+
+`./mcl --update-package io.github.gnuf0rce:mirai-content-censor --channel stable --type plugin`
+
 ### 手动安装
 
 1. 运行 [Mirai Console](https://github.com/mamoe/mirai-console) 生成`plugins`文件夹
-1. 从 [Releases](https://github.com/cssxsh/Mirai-AntiPorn-Plugin/releases) 下载`jar`并将其放入`plugins`文件夹中
+1. 从 [Releases](https://github.com/cssxsh/mirai-content-censor/releases) 下载`jar`并将其放入`plugins`文件夹中
 
 ## TODO
 

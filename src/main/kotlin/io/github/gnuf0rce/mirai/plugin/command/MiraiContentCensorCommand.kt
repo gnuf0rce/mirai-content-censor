@@ -4,8 +4,8 @@ import io.github.gnuf0rce.mirai.plugin.*
 import net.mamoe.mirai.console.command.*
 import net.mamoe.mirai.message.data.*
 
-object AntiPornCensorCommand : SimpleCommand(
-    owner = MiraiAntiPornPlugin,
+object MiraiContentCensorCommand : SimpleCommand(
+    owner = MiraiContentCensorPlugin,
     "censor",
     description = "测试内容是否合法"
 ) {

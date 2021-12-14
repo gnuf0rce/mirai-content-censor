@@ -6,8 +6,8 @@ import net.mamoe.mirai.console.command.*
 import net.mamoe.mirai.contact.*
 import okio.ByteString.Companion.toByteString
 
-object AntiPornRecordCommand : SimpleCommand(
-    owner = MiraiAntiPornPlugin,
+object MiraiCensorRecordCommand : SimpleCommand(
+    owner = MiraiContentCensorPlugin,
     "censor-record",
     description = "查看历史记录"
 ) {

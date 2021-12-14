@@ -14,7 +14,7 @@ import xyz.cssxsh.baidu.aip.censor.*
 import kotlin.coroutines.*
 import kotlin.coroutines.cancellation.*
 
-object AntiPornListener : SimpleListenerHost() {
+object MiraiContentCensorListener : SimpleListenerHost() {
 
     @EventHandler
     suspend fun GroupMessageEvent.handle() {

@@ -7,8 +7,8 @@ import net.mamoe.mirai.console.plugin.jvm.*
 import net.mamoe.mirai.event.*
 import net.mamoe.mirai.utils.*
 
-object MiraiAntiPornPlugin : KotlinPlugin(
-    JvmPluginDescription("io.github.gnuf0rce.anti-porn", "1.1.2") {
+object MiraiContentCensorPlugin : KotlinPlugin(
+    JvmPluginDescription("io.github.gnuf0rce.content-censor", "1.1.2") {
         name("anti-porn")
         author("cssxsh")
     }
@@ -18,14 +18,14 @@ object MiraiAntiPornPlugin : KotlinPlugin(
         ContentCensorConfig.reload()
         ContentCensorToken.reload()
         ContentCensorHistory.reload()
-        AntiPornListener.registerTo(globalEventChannel())
-        AntiPornCensorCommand.register()
-        AntiPornRecordCommand.register()
+        MiraiContentCensorListener.registerTo(globalEventChannel())
+        MiraiContentCensorCommand.register()
+        MiraiCensorRecordCommand.register()
 
         logger.info { "关闭审查请赋予权限 ${NoCensorPermission.id} 于用户" }
     }
 
     override fun onDisable() {
-        AntiPornListener.cancelAll()
+        MiraiContentCensorListener.cancelAll()
     }
 }
