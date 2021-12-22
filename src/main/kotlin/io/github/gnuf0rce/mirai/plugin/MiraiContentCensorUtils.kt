@@ -18,15 +18,16 @@ internal val logger get() = MiraiContentCensorPlugin.logger
 
 internal val config get() = ContentCensorConfig
 
-internal suspend fun censor(message: MessageChain): CensorResult? {
+internal suspend fun censor(message: MessageChain): List<CensorResult> {
+    val results = ArrayList<CensorResult>()
     // Text Censor
     if (message.content.isNotBlank() && config.plain) {
-        return MiraiContentCensor.text(plain = message.content)
+        results.add(MiraiContentCensor.text(plain = message.content))
     }
     // Image Censor
     if (config.image) {
         for (image in message.filterIsInstance<Image>()) {
-            return MiraiContentCensor.image(url = image.queryUrl(), gif = image.imageType == ImageType.GIF)
+            results.add(MiraiContentCensor.image(url = image.queryUrl(), gif = image.imageType == ImageType.GIF))
         }
     }
     // Audio Censor
@@ -34,14 +35,14 @@ internal suspend fun censor(message: MessageChain): CensorResult? {
         for (audio in message.filterIsInstance<OnlineAudio>()) {
             val url = audio.urlForDownload
             val format = audio.codec.formatName
-            return MiraiContentCensor.voice(url = url, format = format, rawText = true, split = false)
+            results.add(MiraiContentCensor.voice(url = url, format = format, rawText = true, split = false))
         }
     }
     // Forward
-    for (node in (message.firstIsInstanceOrNull<ForwardMessage>() ?: return null).nodeList) {
-        return censor(node.messageChain)
+    for (node in message.firstIsInstanceOrNull<ForwardMessage>()?.nodeList.orEmpty()) {
+        results.addAll(censor(message = node.messageChain))
     }
-    return null
+    return results
 }
 
 private fun CensorItem.render(): String {

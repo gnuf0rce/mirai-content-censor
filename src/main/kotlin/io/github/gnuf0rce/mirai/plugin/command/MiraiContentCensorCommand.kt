@@ -15,11 +15,12 @@ object MiraiContentCensorCommand : SimpleCommand(
         val message = with(fromEvent) {
             message.findIsInstance<QuoteReply>()?.source?.originalMessage ?: message
         }
-        val reply = with(censor(message)) {
-            if (this == null) {
-                "没有可以检测的内容"
-            } else {
-                "${conclusion}: ${render()}"
+        val results = censor(message = message)
+        val reply = if (results.isEmpty()) {
+            "没有可以检测的内容"
+        } else {
+            results.joinToString("\n") { result ->
+                "${result.conclusion}: ${result.render()}"
             }
         }
         sendMessage(reply)

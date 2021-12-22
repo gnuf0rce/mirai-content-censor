@@ -24,9 +24,10 @@
 位于 `config/ContentCensor.yml`
 
 1. `mute` 禁言时间，单位秒，默认1分钟
-2. `plain` 是否检查文本，默认 true
-3. `image` 是否检查图片，默认 false
-4. `audio` 是否检查语音，默认 false
+1. `recall` 撤回消息的延时，单位秒，默认0秒
+1. `plain` 是否检查文本，默认 true
+1. `image` 是否检查图片，默认 false
+1. `audio` 是否检查语音，默认 false
 
 ### 避开审查
 

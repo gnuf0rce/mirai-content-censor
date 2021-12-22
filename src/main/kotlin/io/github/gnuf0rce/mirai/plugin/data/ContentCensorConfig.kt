@@ -39,6 +39,10 @@ object ContentCensorConfig : ReadOnlyPluginConfig("ContentCensor"), AipClientCon
     @ValueDescription("禁言时间，单位秒")
     override val mute: Int by value(60)
 
+    @ValueName("recall")
+    @ValueDescription("撤回消息的延时")
+    override val recall: Int by value(0)
+
     @ValueName("plain")
     @ValueDescription("是否检查图片")
     override val plain: Boolean by value(true)
