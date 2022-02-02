@@ -2,8 +2,12 @@ package io.github.gnuf0rce.mirai.plugin
 
 import io.github.gnuf0rce.mirai.plugin.data.*
 import net.mamoe.mirai.console.permission.*
+import net.mamoe.mirai.console.util.ContactUtils.render
+import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
+import net.mamoe.mirai.message.data.MessageSource.Key.recallIn
+import net.mamoe.mirai.utils.*
 import xyz.cssxsh.baidu.aip.censor.*
 
 internal val NoCensorPermission: Permission by lazy {
@@ -86,4 +90,43 @@ fun CensorResult.message(): String {
         is CensorResult.Video -> frames.joinToString { record -> record.data.joinToString { it.message } }
         is CensorResult.Voice -> data.joinToString { record -> record.auditData.joinToString { it.message } }
     }
+}
+
+suspend fun GroupMessageEvent.manage(results: List<CensorResult>): Boolean {
+    var count = 0
+    for (result in results) {
+        when (result.conclusionType) {
+            // 1.合规
+            ConclusionType.COMPLIANCE -> Unit
+            // 2.不合规
+            ConclusionType.NON_COMPLIANCE -> {
+                logger.info { "${sender.render()} 消息不合规, ${result.render()}" }
+                count += result.count().coerceAtLeast(1)
+            }
+            // 3.疑似
+            ConclusionType.SUSPECTED -> {
+                logger.info { "${sender.render()} 消息疑似, ${result.render()}" }
+            }
+            // 0.请求失败 4.审核失败
+            ConclusionType.NONE, ConclusionType.FAILURE -> {
+                logger.warning { "${sender.render()} 消息处理失败, $result" }
+            }
+        }
+    }
+
+    if (results.none { it.conclusionType == ConclusionType.NON_COMPLIANCE || it.conclusionType == ConclusionType.SUSPECTED }) {
+        // 没有发现违规时返回
+        return false
+    }
+
+    // 撤回原消息
+    message.recallIn(config.recall * 1000L)
+    // 发送提示
+    group.sendMessage(At(sender) + results.joinToString { it.message() })
+    // 记录结果
+    ContentCensorHistory.records.compute(sender.id) { _, list -> list.orEmpty() + message.serializeToMiraiCode() }
+    // 禁言
+    if (count > 0) sender.mute(config.mute * count)
+
+    return true
 }

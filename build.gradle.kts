@@ -38,6 +38,8 @@ dependencies {
         exclude(group = "io.ktor", module = "ktor-client-core-jvm")
         exclude(group = "io.ktor", module = "ktor-client-okhttp")
     }
+    compileOnly("xyz.cssxsh.mirai:mirai-administrator:1.0.0-RC1")
+    //
     testImplementation(kotlin("test", "1.6.0"))
 }
 
