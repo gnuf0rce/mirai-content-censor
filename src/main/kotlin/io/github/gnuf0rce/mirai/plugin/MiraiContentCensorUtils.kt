@@ -18,7 +18,7 @@ internal val logger get() = MiraiContentCensorPlugin.logger
 
 internal val config get() = ContentCensorConfig
 
-internal suspend fun censor(message: MessageChain): List<CensorResult> {
+internal suspend fun censor(message: MessageChain, config: HandleConfig = ContentCensorConfig): List<CensorResult> {
     val results = ArrayList<CensorResult>()
     // Text Censor
     if (message.content.isNotBlank() && config.plain) {
