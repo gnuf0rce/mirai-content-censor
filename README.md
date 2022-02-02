@@ -13,7 +13,7 @@
 ### 百度AI
 
 使用前请根据 <https://ai.baidu.com/ai-doc/ANTIPORN/Wkhu9d5iy> 的步骤申请APP 获取`APP_ID` `API_KEY` `SECRET_KEY`  
-在安装插件，并启动`Mirai Console`后，`config/content-censor`目录下会生成`ContentCensor.yml`  
+在安装插件，并启动`Mirai Console`后，`config/io.github.gnuf0rce.content-censor`目录下会生成`ContentCensor.yml`  
 对应修改文件中`APP_ID` `API_KEY` `SECRET_KEY`的值
 
 机器人将会在作为群主或者管理员身份的情况下工作，即群消息内容审核（文本，图片，语音）  
@@ -21,7 +21,7 @@
 
 ### 审核内容
 
-位于 `config/ContentCensor.yml`
+位于 `config/io.github.gnuf0rce.content-censor/ContentCensor.yml`
 
 1. `mute` 禁言时间，单位秒，默认1分钟
 1. `recall` 撤回消息的延时，单位秒，默认0秒

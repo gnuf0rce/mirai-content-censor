@@ -44,7 +44,7 @@ object ContentCensorConfig : ReadOnlyPluginConfig("ContentCensor"), AipClientCon
     override val recall: Int by value(0)
 
     @ValueName("plain")
-    @ValueDescription("是否检查图片")
+    @ValueDescription("是否检查文本")
     override val plain: Boolean by value(true)
 
     @ValueName("image")

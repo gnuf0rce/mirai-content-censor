@@ -14,7 +14,8 @@ import xyz.cssxsh.baidu.exception.*
 import java.net.*
 import java.time.*
 
-object MiraiContentCensor : AipContentCensor(client = object : BaiduAipClient(config = config) {
+object MiraiContentCensor : AipContentCensor(client = object : BaiduAipClient(config = config),
+    CoroutineScope by MiraiContentCensorPlugin.childScope("BaiduAipContentCensor") {
 
     override var expires: OffsetDateTime by ContentCensorToken::expires
 
@@ -27,12 +28,8 @@ object MiraiContentCensor : AipContentCensor(client = object : BaiduAipClient(co
             return try {
                 super.accessToken
             } catch (cause: NotTokenException) {
-                runBlocking(MiraiContentCensorPlugin.coroutineContext) {
-                    if (refreshTokenValue.isBlank()) {
-                        token().accessToken
-                    } else {
-                        refresh().accessToken
-                    }
+                runBlocking(coroutineContext) {
+                    token().accessToken
                 }
             }
         }
@@ -42,7 +39,7 @@ object MiraiContentCensor : AipContentCensor(client = object : BaiduAipClient(co
             return try {
                 super.refreshToken
             } catch (cause: NotTokenException) {
-                runBlocking(MiraiContentCensorPlugin.coroutineContext) {
+                runBlocking(coroutineContext) {
                     token().refreshToken
                 }
             }

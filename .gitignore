@@ -6,3 +6,5 @@
 /out/
 /run/
 local.properties
+
+src/test/kotlin/RunTerminal.kt

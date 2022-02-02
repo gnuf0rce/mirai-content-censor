@@ -10,7 +10,7 @@ import net.mamoe.mirai.utils.*
 import xyz.cssxsh.mirai.plugin.*
 
 object MiraiContentCensorPlugin : KotlinPlugin(
-    JvmPluginDescription("io.github.gnuf0rce.content-censor", "1.2.1") {
+    JvmPluginDescription("io.github.gnuf0rce.content-censor", "1.2.2") {
         name("content-censor")
         author("cssxsh")
 
