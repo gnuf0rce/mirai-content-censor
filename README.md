@@ -6,7 +6,7 @@
 [![Downloads](https://img.shields.io/github/downloads/gnuf0rce/mirai-content-censor/total)](https://shields.io/category/downloads)
 [![MiraiForum](https://img.shields.io/badge/post-on%20MiraiForum-yellow)](https://mirai.mamoe.net/topic/293)
 
-本插件原命名 `Mirai-AntiPorn-Plugin`, 从 `anti-porn` 升级时请注意将 `config/anti-porn` 重命名 为 `config/content-censor`
+同时安装有 [Mirai Administrator](https://github.com/cssxsh/mirai-administrator) 时，将会桥接到服务接口
 
 ## 设置
 
@@ -34,7 +34,6 @@
 拥有权限 `io.github.gnuf0rce.content-censor:no-censor` 的用户将不会被检测
 
 ## 安装
-
 
 ### MCL 指令安装
 
