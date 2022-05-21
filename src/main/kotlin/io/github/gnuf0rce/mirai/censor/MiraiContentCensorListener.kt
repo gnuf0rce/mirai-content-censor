@@ -1,4 +1,4 @@
-package io.github.gnuf0rce.mirai.plugin
+package io.github.gnuf0rce.mirai.censor
 
 import net.mamoe.mirai.console.command.CommandSender.Companion.toCommandSender
 import net.mamoe.mirai.console.permission.PermissionService.Companion.testPermission

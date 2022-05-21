@@ -1,6 +1,6 @@
-package io.github.gnuf0rce.mirai.plugin
+package io.github.gnuf0rce.mirai.censor
 
-import io.github.gnuf0rce.mirai.plugin.data.*
+import io.github.gnuf0rce.mirai.censor.data.*
 import net.mamoe.mirai.console.permission.*
 import net.mamoe.mirai.console.util.ContactUtils.render
 import net.mamoe.mirai.event.events.*

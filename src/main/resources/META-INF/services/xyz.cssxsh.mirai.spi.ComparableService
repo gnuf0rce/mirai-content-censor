@@ -1,1 +1,1 @@
-io.github.gnuf0rce.mirai.plugin.MiraiContentCensorService
+io.github.gnuf0rce.mirai.censor.spi.MiraiContentCensorService

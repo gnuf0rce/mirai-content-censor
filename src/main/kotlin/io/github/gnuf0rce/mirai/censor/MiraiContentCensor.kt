@@ -1,6 +1,6 @@
-package io.github.gnuf0rce.mirai.plugin
+package io.github.gnuf0rce.mirai.censor
 
-import io.github.gnuf0rce.mirai.plugin.data.*
+import io.github.gnuf0rce.mirai.censor.data.*
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
 import io.ktor.client.features.*

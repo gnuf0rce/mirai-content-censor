@@ -1,4 +1,4 @@
-package io.github.gnuf0rce.mirai.plugin.data
+package io.github.gnuf0rce.mirai.censor.data
 
 import xyz.cssxsh.baidu.*
 
