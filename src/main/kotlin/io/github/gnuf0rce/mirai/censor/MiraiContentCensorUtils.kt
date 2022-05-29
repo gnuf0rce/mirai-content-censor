@@ -57,7 +57,7 @@ private fun CensorItem.render(): String {
     }
 }
 
-fun CensorResult.render(): String {
+public fun CensorResult.render(): String {
     return when (this) {
         is CensorResult.Image -> data.joinToString { record ->
             "${record.message}: ${(record.stars + record.hits).map { it.render() }}"
@@ -74,7 +74,7 @@ fun CensorResult.render(): String {
     }
 }
 
-fun CensorResult.count(): Int {
+public fun CensorResult.count(): Int {
     return when (this) {
         is CensorResult.Image -> data.size
         is CensorResult.Text -> data.size
@@ -83,7 +83,7 @@ fun CensorResult.count(): Int {
     }
 }
 
-fun CensorResult.message(): String {
+public fun CensorResult.message(): String {
     return when (this) {
         is CensorResult.Image -> data.joinToString { it.message }
         is CensorResult.Text -> data.joinToString { it.message }
@@ -92,7 +92,7 @@ fun CensorResult.message(): String {
     }
 }
 
-suspend fun GroupMessageEvent.manage(results: List<CensorResult>): Boolean {
+public suspend fun GroupMessageEvent.manage(results: List<CensorResult>): Boolean {
     var count = 0
     for (result in results) {
         when (result.conclusionType) {

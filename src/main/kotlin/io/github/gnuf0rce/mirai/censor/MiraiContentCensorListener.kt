@@ -8,7 +8,7 @@ import net.mamoe.mirai.utils.*
 import kotlin.coroutines.*
 import kotlin.coroutines.cancellation.*
 
-object MiraiContentCensorListener : SimpleListenerHost() {
+internal object MiraiContentCensorListener : SimpleListenerHost() {
 
     @EventHandler
     suspend fun GroupMessageEvent.handle() {

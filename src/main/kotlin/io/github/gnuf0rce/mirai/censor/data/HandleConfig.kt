@@ -1,9 +1,9 @@
 package io.github.gnuf0rce.mirai.censor.data
 
-interface HandleConfig {
-    val mute: Int
-    val recall: Int
-    val plain: Boolean
-    val image: Boolean
-    val audio: Boolean
+public interface HandleConfig {
+    public val mute: Int
+    public val recall: Int
+    public val plain: Boolean
+    public val image: Boolean
+    public val audio: Boolean
 }

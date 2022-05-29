@@ -4,7 +4,7 @@ import io.github.gnuf0rce.mirai.censor.*
 import net.mamoe.mirai.console.command.*
 import net.mamoe.mirai.message.data.*
 
-object MiraiContentCensorCommand : SimpleCommand(
+internal object MiraiContentCensorCommand : SimpleCommand(
     owner = MiraiContentCensorPlugin,
     "censor",
     description = "测试内容是否合法"

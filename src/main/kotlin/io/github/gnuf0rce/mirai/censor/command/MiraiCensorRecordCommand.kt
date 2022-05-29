@@ -6,7 +6,7 @@ import net.mamoe.mirai.console.command.*
 import net.mamoe.mirai.contact.*
 import okio.ByteString.Companion.toByteString
 
-object MiraiCensorRecordCommand : SimpleCommand(
+internal object MiraiCensorRecordCommand : SimpleCommand(
     owner = MiraiContentCensorPlugin,
     "censor-record",
     description = "查看历史记录"

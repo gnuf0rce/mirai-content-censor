@@ -46,6 +46,10 @@ dependencies {
     testImplementation(kotlin("test", "1.6.21"))
 }
 
+kotlin {
+    explicitApi()
+}
+
 tasks {
     test {
         useJUnitPlatform()

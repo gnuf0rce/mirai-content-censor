@@ -14,7 +14,7 @@ import xyz.cssxsh.baidu.exception.*
 import java.net.*
 import java.time.*
 
-object MiraiContentCensor : AipContentCensor(client = object : BaiduAipClient(config = config),
+public object MiraiContentCensor : AipContentCensor(client = object : BaiduAipClient(config = config),
     CoroutineScope by MiraiContentCensorPlugin.childScope("BaiduAipContentCensor") {
 
     override var expires: OffsetDateTime by ContentCensorToken::expires

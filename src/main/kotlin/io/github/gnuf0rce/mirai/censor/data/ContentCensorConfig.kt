@@ -2,7 +2,7 @@ package io.github.gnuf0rce.mirai.censor.data
 
 import net.mamoe.mirai.console.data.*
 
-object ContentCensorConfig : ReadOnlyPluginConfig("ContentCensor"), AipClientConfig, HandleConfig {
+public object ContentCensorConfig : ReadOnlyPluginConfig("ContentCensor"), AipClientConfig, HandleConfig {
     @ValueName("app_name")
     @ValueDescription("百度AI客户端 APP_NAME")
     override val appName: String by value("")
