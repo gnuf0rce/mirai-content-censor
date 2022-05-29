@@ -22,10 +22,10 @@ internal val logger get() = MiraiContentCensorPlugin.logger
 
 internal val config get() = ContentCensorConfig
 
-internal suspend fun censor(message: MessageChain, config: HandleConfig = ContentCensorConfig): List<CensorResult> {
+public suspend fun censor(message: MessageChain, config: HandleConfig = ContentCensorConfig): List<CensorResult> {
     val results = ArrayList<CensorResult>()
     // Text Censor
-    if (message.content.isNotBlank() && config.plain) {
+    if (config.plain && message.anyIsInstance<PlainText>()) {
         results.add(MiraiContentCensor.text(plain = message.content))
     }
     // Image Censor
@@ -44,7 +44,7 @@ internal suspend fun censor(message: MessageChain, config: HandleConfig = Conten
     }
     // Forward
     for (node in message.firstIsInstanceOrNull<ForwardMessage>()?.nodeList.orEmpty()) {
-        results.addAll(censor(message = node.messageChain))
+        results.addAll(censor(message = node.messageChain, config = config))
     }
     return results
 }
