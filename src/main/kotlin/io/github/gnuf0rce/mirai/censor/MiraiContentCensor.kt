@@ -8,42 +8,13 @@ import io.ktor.http.*
 import io.ktor.utils.io.errors.*
 import kotlinx.coroutines.*
 import net.mamoe.mirai.utils.*
-import xyz.cssxsh.baidu.*
 import xyz.cssxsh.baidu.aip.*
-import xyz.cssxsh.baidu.exception.*
 import java.net.*
-import java.time.*
 
 public object MiraiContentCensor : AipContentCensor(client = object : BaiduAipClient(config = config),
     CoroutineScope by MiraiContentCensorPlugin.childScope("BaiduAipContentCensor") {
 
-    override var expires: OffsetDateTime by ContentCensorToken::expires
-
-    override var accessTokenValue: String by ContentCensorToken::accessToken
-
-    override var refreshTokenValue: String by ContentCensorToken::refreshToken
-
-    override val accessToken: String
-        get() {
-            return try {
-                super.accessToken
-            } catch (cause: NotTokenException) {
-                runBlocking(coroutineContext) {
-                    token().accessToken
-                }
-            }
-        }
-
-    override val refreshToken: String
-        get() {
-            return try {
-                super.refreshToken
-            } catch (cause: NotTokenException) {
-                runBlocking(coroutineContext) {
-                    token().refreshToken
-                }
-            }
-        }
+    override val status get() = ContentCensorToken
 
     override val apiIgnore: suspend (Throwable) -> Boolean = { throwable ->
         when (throwable) {

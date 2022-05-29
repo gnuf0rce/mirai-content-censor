@@ -24,7 +24,7 @@ repositories {
 }
 
 dependencies {
-    implementation("xyz.cssxsh.baidu:baidu-aip:2.0.8") {
+    implementation("xyz.cssxsh.baidu:baidu-aip:3.0.0") {
         exclude(group = "org.jetbrains.kotlin")
         exclude(group = "io.ktor")
     }
