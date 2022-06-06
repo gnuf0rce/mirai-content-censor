@@ -1,12 +1,12 @@
 plugins {
     kotlin("jvm") version "1.6.21"
     kotlin("plugin.serialization") version "1.6.21"
-    id("net.mamoe.mirai-console") version "2.11.0"
+    id("net.mamoe.mirai-console") version "2.11.1"
     id("net.mamoe.maven-central-publish") version "0.7.1"
 }
 
 group = "io.github.gnuf0rce"
-version = "1.3.0"
+version = "1.3.1"
 
 mavenCentralPublish {
     useCentralS01()
@@ -41,7 +41,7 @@ dependencies {
         exclude(group = "io.ktor", module = "ktor-client-core")
     }
     compileOnly("xyz.cssxsh.mirai:mirai-administrator:1.1.0")
-    compileOnly("net.mamoe:mirai-core-utils:2.11.0")
+    compileOnly("net.mamoe:mirai-core-utils:2.11.1")
     //
     testImplementation(kotlin("test", "1.6.21"))
 }
