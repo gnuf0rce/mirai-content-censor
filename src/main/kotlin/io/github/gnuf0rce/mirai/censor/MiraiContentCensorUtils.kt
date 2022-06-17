@@ -18,7 +18,13 @@ internal val NoCensorPermission: Permission by lazy {
     )
 }
 
-internal val logger get() = MiraiContentCensorPlugin.logger
+internal val logger by lazy {
+    try {
+        MiraiContentCensorPlugin.logger
+    } catch (_: Throwable) {
+        MiraiLogger.Factory.create(MiraiContentCensorListener::class)
+    }
+}
 
 internal val config get() = ContentCensorConfig
 
