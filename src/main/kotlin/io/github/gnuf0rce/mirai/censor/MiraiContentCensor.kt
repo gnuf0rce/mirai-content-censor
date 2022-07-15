@@ -3,7 +3,7 @@ package io.github.gnuf0rce.mirai.censor
 import io.github.gnuf0rce.mirai.censor.data.*
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
-import io.ktor.client.features.*
+import io.ktor.client.plugins.*
 import io.ktor.http.*
 import io.ktor.utils.io.errors.*
 import kotlinx.coroutines.*
@@ -18,7 +18,6 @@ public object MiraiContentCensor : AipContentCensor(client = object : BaiduAipCl
 
     override val apiIgnore: suspend (Throwable) -> Boolean = { throwable ->
         when (throwable) {
-            is HttpRequestTimeoutException,
             is IOException
             -> {
                 logger.warning { "AipContentCensor Ignore: $throwable" }

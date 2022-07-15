@@ -24,24 +24,13 @@ repositories {
 }
 
 dependencies {
-    implementation("xyz.cssxsh.baidu:baidu-aip:3.0.0") {
-        exclude(group = "org.jetbrains.kotlin")
-        exclude(group = "io.ktor")
-    }
-    implementation("io.ktor:ktor-client-serialization:1.6.7") {
+    implementation("xyz.cssxsh.baidu:baidu-aip:3.1.0") {
         exclude(group = "org.jetbrains.kotlin")
         exclude(group = "org.jetbrains.kotlinx")
         exclude(group = "org.slf4j")
-        exclude(group = "io.ktor", module = "ktor-client-core")
     }
-    implementation("io.ktor:ktor-client-encoding:1.6.7") {
-        exclude(group = "org.jetbrains.kotlin")
-        exclude(group = "org.jetbrains.kotlinx")
-        exclude(group = "org.slf4j")
-        exclude(group = "io.ktor", module = "ktor-client-core")
-    }
-    compileOnly("xyz.cssxsh.mirai:mirai-administrator:1.1.0")
-    compileOnly("net.mamoe:mirai-core-utils:2.11.1")
+    compileOnly("xyz.cssxsh.mirai:mirai-administrator:1.2.4")
+    compileOnly("net.mamoe:mirai-core-utils:2.12.0")
     //
     testImplementation(kotlin("test", "1.6.21"))
 }
