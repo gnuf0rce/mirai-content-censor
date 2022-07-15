@@ -1,12 +1,12 @@
 plugins {
     kotlin("jvm") version "1.6.21"
     kotlin("plugin.serialization") version "1.6.21"
-    id("net.mamoe.mirai-console") version "2.11.1"
+    id("net.mamoe.mirai-console") version "2.12.0"
     id("net.mamoe.maven-central-publish") version "0.7.1"
 }
 
 group = "io.github.gnuf0rce"
-version = "1.3.1"
+version = "1.3.2"
 
 mavenCentralPublish {
     useCentralS01()
@@ -14,7 +14,6 @@ mavenCentralPublish {
     licenseFromGitHubProject("AGPL-3.0", "master")
     publication {
         artifact(tasks.getByName("buildPlugin"))
-        artifact(tasks.getByName("buildPluginLegacy"))
     }
 }
 

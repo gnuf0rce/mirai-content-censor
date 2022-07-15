@@ -2,15 +2,18 @@ package io.github.gnuf0rce.mirai.censor
 
 import io.github.gnuf0rce.mirai.censor.command.*
 import io.github.gnuf0rce.mirai.censor.data.*
+import net.mamoe.mirai.console.MiraiConsole
 import net.mamoe.mirai.console.command.CommandManager.INSTANCE.register
 import net.mamoe.mirai.console.command.CommandManager.INSTANCE.unregister
+import net.mamoe.mirai.console.plugin.*
 import net.mamoe.mirai.console.plugin.jvm.*
+import net.mamoe.mirai.console.util.*
 import net.mamoe.mirai.event.*
 import net.mamoe.mirai.utils.*
 import xyz.cssxsh.mirai.admin.*
 
 public object MiraiContentCensorPlugin : KotlinPlugin(
-    JvmPluginDescription("io.github.gnuf0rce.content-censor", "1.3.1") {
+    JvmPluginDescription("io.github.gnuf0rce.content-censor", "1.3.2") {
         name("content-censor")
         author("cssxsh")
 
@@ -19,6 +22,11 @@ public object MiraiContentCensorPlugin : KotlinPlugin(
 ) {
 
     override fun onEnable() {
+        // XXX: mirai console version check
+        check(SemVersion.parseRangeRequirement(">= 2.12.0-RC").test(MiraiConsole.version)) {
+            "$name $version 需要 Mirai-Console 版本 >= 2.12.0，目前版本是 ${MiraiConsole.version}"
+        }
+
         ContentCensorConfig.reload()
         ContentCensorToken.reload()
         ContentCensorHistory.reload()
