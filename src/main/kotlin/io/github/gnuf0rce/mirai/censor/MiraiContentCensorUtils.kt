@@ -11,11 +11,17 @@ import net.mamoe.mirai.utils.*
 import xyz.cssxsh.baidu.aip.censor.*
 
 internal val NoCensorPermission: Permission by lazy {
-    PermissionService.INSTANCE.register(
-        id = MiraiContentCensorPlugin.permissionId("no-censor"),
-        description = "跳过检测",
-        parent = MiraiContentCensorPlugin.parentPermission
-    )
+    with(PermissionService.INSTANCE) {
+        try {
+            register(
+                id = MiraiContentCensorPlugin.permissionId("no-censor"),
+                description = "跳过检测",
+                parent = MiraiContentCensorPlugin.parentPermission
+            )
+        } catch (_: Throwable) {
+            rootPermission
+        }
+    }
 }
 
 internal val logger by lazy {
