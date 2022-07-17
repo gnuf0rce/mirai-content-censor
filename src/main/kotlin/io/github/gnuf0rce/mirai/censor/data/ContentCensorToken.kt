@@ -13,7 +13,6 @@ internal object ContentCensorToken : AutoSavePluginData("ContentCensorToken"), B
     }
 
     @ValueName("expires")
-    @Suppress("INVISIBLE_REFERENCE", "INVISIBLE_MEMBER")
     override var expires: OffsetDateTime by value(OffsetDateTime.MIN)
 
     @ValueName("access_token")
