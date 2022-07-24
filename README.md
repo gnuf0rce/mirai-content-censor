@@ -33,10 +33,20 @@
 
 拥有权限 `io.github.gnuf0rce.content-censor:no-censor` 的用户将不会被检测
 
+### 指令
+
+1. `/censor` 测试是否有有违规  
+    示例: `/censor cnm`
+2. `/censor-record from [sender] [date]` 查看 sender (消息的发送者) 相关的违规记录
+   示例: `/censor from 123456 2022-07-24`
+3. `/censor-record target [subject] [date]` 查看 subject (消息的接收者) 相关的违规记录
+   示例: `/censor target 789456 2022-07-24`
+
 ## 安装
 
 ### MCL 指令安装
 
+**请确认 mcl.jar 的版本是 2.0.0+**  
 `./mcl --update-package io.github.gnuf0rce:mirai-content-censor --channel stable --type plugin`
 
 ### 手动安装

@@ -18,6 +18,7 @@ public object MiraiContentCensorPlugin : KotlinPlugin(
         author("cssxsh")
 
         dependsOn("xyz.cssxsh.mirai.mirai-administrator", ">= 1.1.0", true)
+        dependsOn("xyz.cssxsh.mirai.plugin.mirai-hibernate-plugin", true)
     }
 ) {
 
@@ -27,9 +28,16 @@ public object MiraiContentCensorPlugin : KotlinPlugin(
             "$name $version 需要 Mirai-Console 版本 >= 2.12.0，目前版本是 ${MiraiConsole.version}"
         }
 
+        try {
+            MiraiContentCensorRecorder.enable()
+            logger.info { "审核记录将记录到数据库 ${MiraiContentCensorRecorder.database()}" }
+        } catch (_: NoClassDefFoundError) {
+            logger.info { "审核记录将记录到 ContentCensorHistory.yml" }
+            ContentCensorHistory.reload()
+        }
+
         ContentCensorConfig.reload()
         ContentCensorToken.reload()
-        ContentCensorHistory.reload()
         MiraiContentCensorCommand.register()
         MiraiCensorRecordCommand.register()
 
@@ -48,5 +56,7 @@ public object MiraiContentCensorPlugin : KotlinPlugin(
         MiraiContentCensorListener.cancelAll()
         MiraiContentCensorCommand.unregister()
         MiraiCensorRecordCommand.unregister()
+
+        MiraiContentCensorRecorder.disable()
     }
 }

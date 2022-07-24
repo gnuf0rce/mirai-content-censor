@@ -1,6 +1,7 @@
 package io.github.gnuf0rce.mirai.censor
 
 import io.github.gnuf0rce.mirai.censor.data.*
+import kotlinx.coroutines.*
 import net.mamoe.mirai.console.permission.*
 import net.mamoe.mirai.console.util.ContactUtils.render
 import net.mamoe.mirai.event.events.*
@@ -58,6 +59,14 @@ public suspend fun censor(message: MessageChain, config: HandleConfig = ContentC
     for (node in message.firstIsInstanceOrNull<ForwardMessage>()?.nodeList.orEmpty()) {
         results.addAll(censor(message = node.messageChain, config = config))
     }
+
+    supervisorScope {
+        launch {
+            // 记录结果
+            MiraiContentCensorRecorder.record(message = message, results = results)
+        }
+    }
+
     return results
 }
 
@@ -135,8 +144,6 @@ public suspend fun GroupMessageEvent.manage(results: List<CensorResult>): Boolea
     message.recallIn(config.recall * 1000L)
     // 发送提示
     group.sendMessage(At(sender) + results.joinToString { it.message() })
-    // 记录结果
-    ContentCensorHistory.records.compute(sender.id) { _, list -> list.orEmpty() + message.serializeToMiraiCode() }
     // 禁言
     if (count > 0) sender.mute(config.mute * count)
 

@@ -29,9 +29,14 @@ dependencies {
         exclude(group = "org.slf4j")
     }
     compileOnly("xyz.cssxsh.mirai:mirai-administrator:1.2.4")
+    compileOnly("xyz.cssxsh.mirai:mirai-hibernate-plugin:2.4.2")
     compileOnly("net.mamoe:mirai-core-utils:2.12.0")
     //
     testImplementation(kotlin("test", "1.6.21"))
+}
+
+mirai {
+    jvmTarget = JavaVersion.VERSION_11
 }
 
 kotlin {
