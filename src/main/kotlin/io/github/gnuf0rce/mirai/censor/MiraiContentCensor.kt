@@ -10,9 +10,21 @@ import kotlinx.coroutines.*
 import net.mamoe.mirai.utils.*
 import xyz.cssxsh.baidu.aip.*
 import java.net.*
+import kotlin.coroutines.*
 
-public object MiraiContentCensor : AipContentCensor(client = object : BaiduAipClient(config = config),
-    CoroutineScope by MiraiContentCensorPlugin.childScope("BaiduAipContentCensor") {
+public object MiraiContentCensor : AipContentCensor(client = object : BaiduAipClient(config = config), CoroutineScope {
+
+    override val coroutineContext: CoroutineContext by lazy {
+        try {
+            MiraiContentCensorPlugin.childScopeContext("BaiduAipContentCensor")
+        } catch (_: Throwable) {
+            CoroutineExceptionHandler { _, throwable ->
+                if (throwable.unwrapCancellationException() !is CancellationException) {
+                    logger.error("Exception in coroutine BaiduAipContentCensor", throwable)
+                }
+            }.childScopeContext("BaiduAipContentCensor")
+        }
+    }
 
     override val status get() = ContentCensorToken
 

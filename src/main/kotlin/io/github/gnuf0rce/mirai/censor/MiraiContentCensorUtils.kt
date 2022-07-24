@@ -28,7 +28,7 @@ internal val logger by lazy {
     try {
         MiraiContentCensorPlugin.logger
     } catch (_: Throwable) {
-        MiraiLogger.Factory.create(MiraiContentCensorListener::class)
+        MiraiLogger.Factory.create(MiraiContentCensor::class)
     }
 }
 
