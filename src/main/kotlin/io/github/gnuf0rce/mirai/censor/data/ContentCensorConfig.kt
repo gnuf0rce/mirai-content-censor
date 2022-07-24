@@ -5,19 +5,19 @@ import net.mamoe.mirai.console.data.*
 public object ContentCensorConfig : ReadOnlyPluginConfig("ContentCensor"), AipClientConfig, HandleConfig {
     @ValueName("app_name")
     @ValueDescription("百度AI客户端 APP_NAME")
-    override val appName: String by value("")
+    override val appName: String by value(System.getProperty("io.github.gnuf0rce.mirai.censor.name", ""))
 
     @ValueName("app_id")
     @ValueDescription("百度AI客户端 APP_ID")
-    override val appId: Long by value(0L)
+    override val appId: Long by value(System.getProperty("io.github.gnuf0rce.mirai.censor.id", "0").toLong())
 
     @ValueName("api_key")
     @ValueDescription("百度AI客户端 API_KEY")
-    override val appKey: String by value("")
+    override val appKey: String by value(System.getProperty("io.github.gnuf0rce.mirai.censor.key", ""))
 
     @ValueName("secret_key")
     @ValueDescription("百度AI客户端 SECRET_KEY")
-    override val secretKey: String by value("")
+    override val secretKey: String by value(System.getProperty("io.github.gnuf0rce.mirai.censor.secret", ""))
 
     @ValueName("connection_timeout_in_millis")
     @ValueDescription("百度AI客户端 连接超时 毫秒")
