@@ -46,7 +46,7 @@
 
 ### MCL 指令安装
 
-**请确认 mcl.jar 的版本是 2.0.0+**  
+**请确认 mcl.jar 的版本是 2.1.0+**  
 `./mcl --update-package io.github.gnuf0rce:mirai-content-censor --channel stable --type plugin`
 
 ### 手动安装
