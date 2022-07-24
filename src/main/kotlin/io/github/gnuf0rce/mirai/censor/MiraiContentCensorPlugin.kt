@@ -17,7 +17,7 @@ public object MiraiContentCensorPlugin : KotlinPlugin(
         name("content-censor")
         author("cssxsh")
 
-        dependsOn("xyz.cssxsh.mirai.mirai-administrator", ">= 1.1.0", true)
+        dependsOn("xyz.cssxsh.mirai.plugin.mirai-administrator", ">= 1.1.0", true)
         dependsOn("xyz.cssxsh.mirai.plugin.mirai-hibernate-plugin", true)
     }
 ) {
