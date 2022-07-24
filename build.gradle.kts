@@ -23,7 +23,7 @@ repositories {
 }
 
 dependencies {
-    api("xyz.cssxsh.baidu:baidu-aip:3.1.2") {
+    api("xyz.cssxsh.baidu:baidu-aip:3.1.3") {
         exclude(group = "org.jetbrains.kotlin")
         exclude(group = "org.jetbrains.kotlinx")
         exclude(group = "org.slf4j")
