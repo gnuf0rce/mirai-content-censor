@@ -17,17 +17,17 @@
 对应修改文件中`APP_ID` `API_KEY` `SECRET_KEY`的值
 
 机器人将会在作为群主或者管理员身份的情况下工作，即群消息内容审核（文本，图片，语音）  
-机器人的审核规则请到 <https://ai.baidu.com/censoring#/strategylist> 修改策略
+机器人的审核规则请到 <https://ai.baidu.com/censoring/#/strategylist> 修改策略
 
 ### 审核内容
 
 位于 `config/io.github.gnuf0rce.content-censor/ContentCensor.yml`
 
 1. `mute` 禁言时间，单位秒，默认1分钟
-1. `recall` 撤回消息的延时，单位秒，默认0秒
-1. `plain` 是否检查文本，默认 true
-1. `image` 是否检查图片，默认 false
-1. `audio` 是否检查语音，默认 false
+2. `recall` 撤回消息的延时，单位秒，默认0秒
+3. `plain` 是否检查文本，默认 true
+4. `image` 是否检查图片，默认 false
+5. `audio` 是否检查语音，默认 false
 
 ### 避开审查
 
@@ -42,6 +42,15 @@
 3. `/censor-record target [subject] [date]` 查看 subject (消息的接收者) 相关的违规记录  
    示例: `/censor target 789456 2022-07-24`
 
+### 百度云后台
+
+* 策略管理 <https://ai.baidu.com/censoring/#/strategylist>  
+  配置审查规则、自定义黑白名单、测试验证规则有效性  
+* 数据统计 <https://ai.baidu.com/censoring/#/overview>  
+  统计结果，图表
+* 数据查询 <https://ai.baidu.com/censoring/#/query>  
+  历史审核数据
+
 ## 安装
 
 ### MCL 指令安装
@@ -52,7 +61,7 @@
 ### 手动安装
 
 1. 运行 [Mirai Console](https://github.com/mamoe/mirai-console) 生成`plugins`文件夹
-1. 从 [Releases](https://github.com/cssxsh/mirai-content-censor/releases) 下载`jar`并将其放入`plugins`文件夹中
+2. 从 [Releases](https://github.com/cssxsh/mirai-content-censor/releases) 下载`jar`并将其放入`plugins`文件夹中
 
 ## TODO
 
