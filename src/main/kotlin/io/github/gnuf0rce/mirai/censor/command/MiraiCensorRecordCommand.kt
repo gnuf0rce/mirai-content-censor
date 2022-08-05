@@ -44,6 +44,7 @@ internal object MiraiCensorRecordCommand : CompositeCommand(
         val list = MiraiContentCensorRecorder.from(sender, start, end)
         sendMessage(list.render())
     }
+
     @SubCommand
     suspend fun CommandSender.target(subject: Long, date: LocalDate) {
         val start = date

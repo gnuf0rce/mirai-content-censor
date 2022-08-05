@@ -73,8 +73,8 @@ public object MiraiContentCensorRecorder {
             ContentCensorHistory.records
                 .asSequence()
                 .filter { it.fromId == fromId && it.time in start..end }
-                .sortedByDescending { it.time }
-                .toList()
+                .toMutableList()
+                .apply { sortByDescending { it.time } }
         }
     }
 
@@ -97,8 +97,8 @@ public object MiraiContentCensorRecorder {
             ContentCensorHistory.records
                 .asSequence()
                 .filter { it.targetId == targetId && it.time in start..end }
-                .sortedByDescending { it.time }
-                .toList()
+                .toMutableList()
+                .apply { sortByDescending { it.time } }
         }
     }
 }
