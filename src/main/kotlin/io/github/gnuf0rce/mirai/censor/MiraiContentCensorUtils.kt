@@ -49,10 +49,11 @@ public suspend fun censor(message: MessageChain, config: HandleConfig = ContentC
     }
     // Audio Censor
     if (config.audio) {
+        val extension = VoiceExtension(rawText = true, split = false)
         for (audio in message.filterIsInstance<OnlineAudio>()) {
             val url = audio.urlForDownload
             val format = audio.codec.formatName
-            results.add(MiraiContentCensor.voice(url = url, format = format, rawText = true, split = false))
+            results.add(MiraiContentCensor.voice(url = url, format = format, extension = extension))
         }
     }
     // Forward
