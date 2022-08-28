@@ -16,13 +16,13 @@ public object MiraiContentCensor : AipContentCensor(client = object : BaiduAipCl
 
     override val coroutineContext: CoroutineContext by lazy {
         try {
-            MiraiContentCensorPlugin.childScopeContext("BaiduAipContentCensor")
+            MiraiContentCensorPlugin.coroutineContext + CoroutineName("BaiduAipContentCensor")
         } catch (_: Throwable) {
             CoroutineExceptionHandler { _, throwable ->
                 if (throwable.unwrapCancellationException() !is CancellationException) {
                     logger.error("Exception in coroutine BaiduAipContentCensor", throwable)
                 }
-            }.childScopeContext("BaiduAipContentCensor")
+            } + CoroutineName("BaiduAipContentCensor")
         }
     }
 
