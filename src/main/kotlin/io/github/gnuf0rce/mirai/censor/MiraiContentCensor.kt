@@ -4,6 +4,7 @@ import io.github.gnuf0rce.mirai.censor.data.*
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
 import io.ktor.client.plugins.*
+import io.ktor.client.utils.*
 import io.ktor.http.*
 import io.ktor.utils.io.errors.*
 import kotlinx.coroutines.*
