@@ -31,9 +31,10 @@ public object MiraiContentCensor : AipContentCensor(client = object : BaiduAipCl
 
     override val apiIgnore: suspend (Throwable) -> Boolean = { throwable ->
         when (throwable) {
-            is IOException
-            -> {
-                logger.warning { "AipContentCensor Ignore: $throwable" }
+            is UnknownHostException,
+            is NoRouteToHostException -> false
+            is IOException -> {
+                logger.warning({ "AipContentCensor Ignore" }, throwable)
                 true
             }
             else -> false
@@ -51,8 +52,7 @@ public object MiraiContentCensor : AipContentCensor(client = object : BaiduAipCl
                 requestTimeoutMillis = requestTimeoutInMillis
             }
             engine {
-                this as OkHttpConfig
-                config {
+                (this as OkHttpConfig).config {
                     if (proxyUrl.isNotBlank()) proxy(with(Url(proxyUrl)) {
                         val type = when (protocol) {
                             URLProtocol.SOCKS -> Proxy.Type.SOCKS
