@@ -51,9 +51,16 @@ public suspend fun censor(message: MessageChain, config: HandleConfig = ContentC
     if (config.audio) {
         val extension = VoiceExtension(rawText = true, split = false)
         for (audio in message.filterIsInstance<OnlineAudio>()) {
-            val url = audio.urlForDownload
-            val format = audio.codec.formatName
-            results.add(MiraiContentCensor.voice(url = url, format = format, extension = extension))
+            val result = when (audio.codec) {
+                AudioCodec.AMR -> {
+                    MiraiContentCensor.voice(url = audio.urlForDownload, format = "amr", extension = extension)
+                }
+                AudioCodec.SILK -> {
+                    val source = MiraiContentCensor.pcm(audio = audio)
+                    MiraiContentCensor.voice(bytes = source, format = "pcm", extension = extension)
+                }
+            }
+            results.add(result)
         }
     }
     // Forward

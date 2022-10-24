@@ -28,6 +28,10 @@ public object MiraiContentCensorPlugin : KotlinPlugin(
             "$name $version 需要 Mirai-Console 版本 >= 2.12.0，目前版本是 ${MiraiConsole.version}"
         }
 
+        val audio = resolveDataFile("audio")
+        audio.mkdirs()
+        System.setProperty(MiraiContentCensor.AUDIO_CACHE_PATH, audio.path)
+
         try {
             MiraiContentCensorRecorder.enable()
             logger.info { "审核记录将记录到数据库 ${MiraiContentCensorRecorder.database()}" }
