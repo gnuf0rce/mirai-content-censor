@@ -1,9 +1,9 @@
 plugins {
-    kotlin("jvm") version "1.7.10"
-    kotlin("plugin.serialization") version "1.7.10"
-    id("net.mamoe.mirai-console") version "2.13.0-M1"
+    kotlin("jvm") version "1.7.20"
+    kotlin("plugin.serialization") version "1.7.20"
+    id("net.mamoe.mirai-console") version "2.13.0-RC2"
     id("me.him188.maven-central-publish") version "1.0.0-dev-3"
-    id("me.him188.kotlin-jvm-blocking-bridge") version "2.1.0-170.1"
+    id("me.him188.kotlin-jvm-blocking-bridge") version "2.2.0-172.1"
 }
 
 group = "io.github.gnuf0rce"
@@ -14,9 +14,9 @@ mavenCentralPublish {
     singleDevGithubProject("gnuf0rce", "mirai-content-censor", "cssxsh")
     licenseFromGitHubProject("AGPL-3.0")
     workingDir = System.getenv("PUBLICATION_TEMP")?.let { file(it).resolve(projectName) }
-        ?: project.buildDir.resolve("publishing-tmp")
+        ?: buildDir.resolve("publishing-tmp")
     publication {
-        artifact(tasks.getByName("buildPlugin"))
+        artifact(tasks["buildPlugin"])
     }
 }
 
@@ -31,10 +31,13 @@ dependencies {
         exclude(group = "org.jetbrains.kotlinx")
         exclude(group = "org.slf4j")
     }
-    compileOnly("xyz.cssxsh.mirai:mirai-administrator:1.2.6")
-    compileOnly("xyz.cssxsh.mirai:mirai-hibernate-plugin:2.4.3")
+    implementation("io.github.kasukusakura:silk-codec:0.0.5")
+    compileOnly("xyz.cssxsh.mirai:mirai-administrator:1.2.9")
+    compileOnly("xyz.cssxsh.mirai:mirai-hibernate-plugin:2.4.4")
     //
     testImplementation(kotlin("test"))
+    testImplementation("org.slf4j:slf4j-simple:2.0.3")
+    testImplementation("net.mamoe:mirai-logging-slf4j:2.13.0-RC2")
 }
 
 mirai {
