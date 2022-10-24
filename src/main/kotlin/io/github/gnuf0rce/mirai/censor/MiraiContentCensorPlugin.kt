@@ -2,9 +2,11 @@ package io.github.gnuf0rce.mirai.censor
 
 import io.github.gnuf0rce.mirai.censor.command.*
 import io.github.gnuf0rce.mirai.censor.data.*
+import io.github.kasukusakura.silkcodec.*
 import net.mamoe.mirai.console.MiraiConsole
 import net.mamoe.mirai.console.command.CommandManager.INSTANCE.register
 import net.mamoe.mirai.console.command.CommandManager.INSTANCE.unregister
+import net.mamoe.mirai.console.extension.*
 import net.mamoe.mirai.console.plugin.*
 import net.mamoe.mirai.console.plugin.jvm.*
 import net.mamoe.mirai.console.util.*
@@ -21,6 +23,14 @@ public object MiraiContentCensorPlugin : KotlinPlugin(
         dependsOn("xyz.cssxsh.mirai.plugin.mirai-hibernate-plugin", true)
     }
 ) {
+
+    override fun PluginComponentStorage.onLoad() {
+        try {
+            NativeLoader.initialize(dataFolder)
+        } catch (error: UnsatisfiedLinkError) {
+            logger.error("初始化失败, folder: $dataFolder", error)
+        }
+    }
 
     override fun onEnable() {
         // XXX: mirai console version check
