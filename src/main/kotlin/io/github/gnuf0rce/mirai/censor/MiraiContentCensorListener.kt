@@ -10,11 +10,13 @@ import kotlin.coroutines.cancellation.*
 
 internal object MiraiContentCensorListener : SimpleListenerHost() {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     suspend fun GroupMessageEvent.handle() {
         if (NoCensorPermission.testPermission(toCommandSender()) || group.botAsMember.permission <= sender.permission) return
 
-        manage(results = censor(message = message))
+        if (manage(results = censor(message = message))) {
+            intercept()
+        }
     }
 
     override fun handleException(context: CoroutineContext, exception: Throwable) {
