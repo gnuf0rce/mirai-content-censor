@@ -20,7 +20,7 @@ internal val NoCensorPermission: Permission by lazy {
                 description = "跳过检测",
                 parent = MiraiContentCensorPlugin.parentPermission
             )
-        } catch (_: Throwable) {
+        } catch (_: UninitializedPropertyAccessException) {
             rootPermission
         }
     }
@@ -29,7 +29,7 @@ internal val NoCensorPermission: Permission by lazy {
 internal val logger by lazy {
     try {
         MiraiContentCensorPlugin.logger
-    } catch (_: Throwable) {
+    } catch (_: UninitializedPropertyAccessException) {
         MiraiLogger.Factory.create(MiraiContentCensor::class)
     }
 }

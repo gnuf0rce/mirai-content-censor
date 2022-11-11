@@ -19,7 +19,7 @@ public object MiraiBaiduAipClient : BaiduAipClient(config = config), CoroutineSc
     override val coroutineContext: CoroutineContext by lazy {
         try {
             MiraiContentCensorPlugin.coroutineContext + CoroutineName("BaiduAipContentCensor")
-        } catch (_: Throwable) {
+        } catch (_: UninitializedPropertyAccessException) {
             CoroutineExceptionHandler { _, throwable ->
                 if (throwable.unwrapCancellationException() !is CancellationException) {
                     logger.error("Exception in coroutine BaiduAipContentCensor", throwable)

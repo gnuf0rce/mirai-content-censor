@@ -15,7 +15,7 @@ import net.mamoe.mirai.utils.*
 import xyz.cssxsh.mirai.admin.*
 
 public object MiraiContentCensorPlugin : KotlinPlugin(
-    JvmPluginDescription("io.github.gnuf0rce.content-censor", "1.3.6") {
+    JvmPluginDescription("io.github.gnuf0rce.content-censor", "1.3.8") {
         name("content-censor")
         author("cssxsh")
 
@@ -34,7 +34,7 @@ public object MiraiContentCensorPlugin : KotlinPlugin(
             System.setProperty(MiraiContentCensor.IMAGE_CACHE_PATH, image.path)
             NativeLoader.initialize(dataFolder)
         } catch (error: UnsatisfiedLinkError) {
-            logger.error("初始化失败, folder: $dataFolder", error)
+            logger.error("Silk Codec 初始化失败, folder: $dataFolder", error)
         }
     }
 
