@@ -10,6 +10,7 @@ import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import net.mamoe.mirai.message.data.MessageSource.Key.recallIn
 import net.mamoe.mirai.utils.*
 import xyz.cssxsh.baidu.aip.censor.*
+import kotlin.io.path.*
 
 internal val NoCensorPermission: Permission by lazy {
     with(PermissionService.INSTANCE) {
@@ -44,7 +45,15 @@ public suspend fun censor(message: MessageChain, config: HandleConfig = ContentC
     // Image Censor
     if (config.image) {
         for (image in message.filterIsInstance<Image>()) {
-            results.add(MiraiContentCensor.image(url = image.queryUrl(), gif = image.imageType == ImageType.GIF))
+            val url = image.queryUrl()
+            val result = if (config.download) {
+                val file = MiraiContentCensor.download(message = image)
+                MiraiContentCensor.image(bytes = file.readBytes(), gif = image.imageType == ImageType.GIF)
+            } else {
+                MiraiContentCensor.image(url = url, gif = image.imageType == ImageType.GIF)
+            }
+
+            results.add(result)
         }
     }
     // Audio Censor
@@ -53,7 +62,12 @@ public suspend fun censor(message: MessageChain, config: HandleConfig = ContentC
         for (audio in message.filterIsInstance<OnlineAudio>()) {
             val result = when (audio.codec) {
                 AudioCodec.AMR -> {
-                    MiraiContentCensor.voice(url = audio.urlForDownload, format = "amr", extension = extension)
+                    if (config.download) {
+                        val file = MiraiContentCensor.download(message = audio)
+                        MiraiContentCensor.voice(bytes = file.readBytes(), format = "amr", extension = extension)
+                    } else {
+                        MiraiContentCensor.voice(url = audio.urlForDownload, format = "amr", extension = extension)
+                    }
                 }
                 AudioCodec.SILK -> {
                     val source = MiraiContentCensor.pcm(audio = audio)

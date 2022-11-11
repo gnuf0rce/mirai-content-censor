@@ -6,4 +6,5 @@ public interface HandleConfig {
     public val plain: Boolean
     public val image: Boolean
     public val audio: Boolean
+    public val download: Boolean
 }

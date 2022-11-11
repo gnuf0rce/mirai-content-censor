@@ -54,4 +54,8 @@ public object ContentCensorConfig : ReadOnlyPluginConfig("ContentCensor"), AipCl
     @ValueName("audio")
     @ValueDescription("是否检查语音")
     override val audio: Boolean by value(false)
+
+    @ValueName("download")
+    @ValueDescription("下载文件再上传(语音/图片)")
+    override val download: Boolean by value(false)
 }

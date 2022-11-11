@@ -26,6 +26,12 @@ public object MiraiContentCensorPlugin : KotlinPlugin(
 
     override fun PluginComponentStorage.onLoad() {
         try {
+            val audio = resolveDataFile("cache")
+            audio.mkdirs()
+            System.setProperty(MiraiContentCensor.AUDIO_CACHE_PATH, audio.path)
+            val image = resolveDataFile("image")
+            image.mkdirs()
+            System.setProperty(MiraiContentCensor.IMAGE_CACHE_PATH, image.path)
             NativeLoader.initialize(dataFolder)
         } catch (error: UnsatisfiedLinkError) {
             logger.error("初始化失败, folder: $dataFolder", error)
@@ -37,10 +43,6 @@ public object MiraiContentCensorPlugin : KotlinPlugin(
         check(SemVersion.parseRangeRequirement(">= 2.12.0-RC").test(MiraiConsole.version)) {
             "$name $version 需要 Mirai-Console 版本 >= 2.12.0，目前版本是 ${MiraiConsole.version}"
         }
-
-        val audio = resolveDataFile("audio")
-        audio.mkdirs()
-        System.setProperty(MiraiContentCensor.AUDIO_CACHE_PATH, audio.path)
 
         try {
             MiraiContentCensorRecorder.enable()
