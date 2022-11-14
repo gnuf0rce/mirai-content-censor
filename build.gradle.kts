@@ -31,7 +31,7 @@ dependencies {
         exclude(group = "org.jetbrains.kotlinx")
         exclude(group = "org.slf4j")
     }
-    implementation("io.github.kasukusakura:silk-codec:0.0.5")
+    compileOnly("net.mamoe:mirai-silk-converter:0.0.5")
     compileOnly("xyz.cssxsh.mirai:mirai-administrator:1.3.0")
     compileOnly("xyz.cssxsh.mirai:mirai-hibernate-plugin:2.5.0")
     //
