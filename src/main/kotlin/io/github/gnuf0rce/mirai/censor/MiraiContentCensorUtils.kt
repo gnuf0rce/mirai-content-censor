@@ -10,6 +10,8 @@ import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import net.mamoe.mirai.message.data.MessageSource.Key.recallIn
 import net.mamoe.mirai.utils.*
 import xyz.cssxsh.baidu.aip.censor.*
+import java.util.*
+import kotlin.collections.*
 import kotlin.io.path.*
 
 internal val NoCensorPermission: Permission by lazy {
@@ -36,21 +38,32 @@ internal val logger by lazy {
 
 internal val config get() = ContentCensorConfig
 
+internal val plains: MutableMap<String, CensorResult> = WeakHashMap()
+
+internal val images: MutableMap<String, CensorResult> = WeakHashMap()
+
 public suspend fun censor(message: MessageChain, config: HandleConfig = ContentCensorConfig): List<CensorResult> {
     val results = ArrayList<CensorResult>()
     // Text Censor
     if (config.plain && message.anyIsInstance<PlainText>()) {
-        results.add(MiraiContentCensor.text(plain = message.content))
+        val content = message.contentToString()
+        val result = plains.getOrPut(content) {
+            MiraiContentCensor.text(plain = content)
+        }
+
+        results.add(result)
     }
     // Image Censor
     if (config.image) {
         for (image in message.filterIsInstance<Image>()) {
             val url = image.queryUrl()
-            val result = if (config.download) {
-                val file = MiraiContentCensor.download(message = image)
-                MiraiContentCensor.image(bytes = file.readBytes(), gif = image.imageType == ImageType.GIF)
-            } else {
-                MiraiContentCensor.image(url = url, gif = image.imageType == ImageType.GIF)
+            val result = images.getOrPut(url) {
+                if (config.download) {
+                    val file = MiraiContentCensor.download(message = image)
+                    MiraiContentCensor.image(bytes = file.readBytes(), gif = image.imageType == ImageType.GIF)
+                } else {
+                    MiraiContentCensor.image(url = url, gif = image.imageType == ImageType.GIF)
+                }
             }
 
             results.add(result)
