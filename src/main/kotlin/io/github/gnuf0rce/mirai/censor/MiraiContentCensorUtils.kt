@@ -38,9 +38,9 @@ internal val logger by lazy {
 
 internal val config get() = ContentCensorConfig
 
-internal val plains: MutableMap<String, CensorResult> = WeakHashMap()
+internal val plains: MutableMap<String, CensorResult> = WeakHashMap(1024)
 
-internal val images: MutableMap<String, CensorResult> = WeakHashMap()
+internal val images: MutableMap<String, CensorResult> = WeakHashMap(1024)
 
 public suspend fun censor(message: MessageChain, config: HandleConfig = ContentCensorConfig): List<CensorResult> {
     val results = ArrayList<CensorResult>()

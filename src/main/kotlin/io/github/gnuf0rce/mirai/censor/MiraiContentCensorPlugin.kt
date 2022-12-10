@@ -3,7 +3,8 @@ package io.github.gnuf0rce.mirai.censor
 import io.github.gnuf0rce.mirai.censor.command.*
 import io.github.gnuf0rce.mirai.censor.data.*
 import io.github.kasukusakura.silkcodec.*
-import net.mamoe.mirai.console.MiraiConsole
+import kotlinx.coroutines.*
+import net.mamoe.mirai.console.*
 import net.mamoe.mirai.console.command.CommandManager.INSTANCE.register
 import net.mamoe.mirai.console.command.CommandManager.INSTANCE.unregister
 import net.mamoe.mirai.console.extension.*
@@ -15,7 +16,7 @@ import net.mamoe.mirai.utils.*
 import xyz.cssxsh.mirai.admin.*
 
 public object MiraiContentCensorPlugin : KotlinPlugin(
-    JvmPluginDescription("io.github.gnuf0rce.content-censor", "1.3.8") {
+    JvmPluginDescription("io.github.gnuf0rce.content-censor", "1.3.9") {
         name("content-censor")
         author("cssxsh")
 
@@ -45,17 +46,18 @@ public object MiraiContentCensorPlugin : KotlinPlugin(
             with(jvmPluginClasspath) {
                 downloadAndAddToPath(pluginIndependentLibrariesClassLoader, listOf("io.github.kasukusakura:silk-codec:0.0.5"))
             }
-            try {
-                val audio = resolveDataFile("audio")
-                audio.mkdirs()
-                System.setProperty(MiraiContentCensor.AUDIO_CACHE_PATH, audio.path)
-                val image = resolveDataFile("image")
-                image.mkdirs()
-                System.setProperty(MiraiContentCensor.IMAGE_CACHE_PATH, image.path)
-                NativeLoader.initialize(dataFolder)
-            } catch (error: UnsatisfiedLinkError) {
-                logger.error("Silk Codec 初始化失败, folder: $dataFolder", error)
-            }
+        }
+
+        try {
+            val audio = resolveDataFile("audio")
+            audio.mkdirs()
+            System.setProperty(MiraiContentCensor.AUDIO_CACHE_PATH, audio.path)
+            val image = resolveDataFile("image")
+            image.mkdirs()
+            System.setProperty(MiraiContentCensor.IMAGE_CACHE_PATH, image.path)
+            NativeLoader.initialize(dataFolder)
+        } catch (error: UnsatisfiedLinkError) {
+            logger.error("Silk Codec 初始化失败, folder: $dataFolder", error)
         }
 
         try {
@@ -77,13 +79,13 @@ public object MiraiContentCensorPlugin : KotlinPlugin(
             MiraiAdministrator
             logger.info { "插件已桥接至 mirai-administrator" }
         } catch (_: NoClassDefFoundError) {
-            logger.warning { "未安装 mirai-administrator" }
+            logger.warning { "未安装 mirai-administrator, 将启用插件自身的监听器" }
             MiraiContentCensorListener.registerTo(globalEventChannel())
         }
     }
 
     override fun onDisable() {
-        MiraiContentCensorListener.cancelAll()
+        MiraiContentCensorListener.cancel()
         MiraiContentCensorCommand.unregister()
         MiraiCensorRecordCommand.unregister()
 
