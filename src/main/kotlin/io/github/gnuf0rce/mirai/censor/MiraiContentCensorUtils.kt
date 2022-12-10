@@ -56,12 +56,12 @@ public suspend fun censor(message: MessageChain, config: HandleConfig = ContentC
     // Image Censor
     if (config.image) {
         for (image in message.filterIsInstance<Image>()) {
-            val url = image.queryUrl()
-            val result = images.getOrPut(url) {
+            val result = images.getOrPut(image.imageId) {
                 if (config.download) {
                     val file = MiraiContentCensor.download(message = image)
                     MiraiContentCensor.image(bytes = file.readBytes(), gif = image.imageType == ImageType.GIF)
                 } else {
+                    val url = image.queryUrl()
                     MiraiContentCensor.image(url = url, gif = image.imageType == ImageType.GIF)
                 }
             }
