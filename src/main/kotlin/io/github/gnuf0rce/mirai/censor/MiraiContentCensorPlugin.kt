@@ -7,7 +7,6 @@ import kotlinx.coroutines.*
 import net.mamoe.mirai.console.*
 import net.mamoe.mirai.console.command.CommandManager.INSTANCE.register
 import net.mamoe.mirai.console.command.CommandManager.INSTANCE.unregister
-import net.mamoe.mirai.console.extension.*
 import net.mamoe.mirai.console.plugin.*
 import net.mamoe.mirai.console.plugin.jvm.*
 import net.mamoe.mirai.console.util.*
@@ -16,7 +15,7 @@ import net.mamoe.mirai.utils.*
 import xyz.cssxsh.mirai.admin.*
 
 public object MiraiContentCensorPlugin : KotlinPlugin(
-    JvmPluginDescription("io.github.gnuf0rce.content-censor", "1.3.9") {
+    JvmPluginDescription("io.github.gnuf0rce.content-censor", "1.3.10") {
         name("content-censor")
         author("cssxsh")
 
