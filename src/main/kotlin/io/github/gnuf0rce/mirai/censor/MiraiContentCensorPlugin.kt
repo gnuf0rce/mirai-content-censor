@@ -28,10 +28,9 @@ public object MiraiContentCensorPlugin : KotlinPlugin(
 
     private val additional by lazy {
         try {
-            @OptIn(MiraiExperimentalApi::class)
-            net.mamoe.mirai.silkconverter.SilkConverter::class.java
+            Class.forName("net.mamoe.mirai.silkconverter.SilkConverter", false, jvmPluginClasspath.pluginClassLoader)
             false
-        } catch (_: NoClassDefFoundError) {
+        } catch (_: ClassNotFoundException) {
             true
         }
     }
@@ -46,19 +45,19 @@ public object MiraiContentCensorPlugin : KotlinPlugin(
             with(jvmPluginClasspath) {
                 downloadAndAddToPath(pluginIndependentLibrariesClassLoader, listOf("io.github.kasukusakura:silk-codec:0.0.5"))
             }
+            try {
+                NativeLoader.initialize(dataFolder)
+            } catch (error: UnsatisfiedLinkError) {
+                logger.error("Silk Codec 初始化失败, folder: $dataFolder", error)
+            }
         }
 
-        try {
-            val audio = resolveDataFile("audio")
-            audio.mkdirs()
-            System.setProperty(MiraiContentCensor.AUDIO_CACHE_PATH, audio.path)
-            val image = resolveDataFile("image")
-            image.mkdirs()
-            System.setProperty(MiraiContentCensor.IMAGE_CACHE_PATH, image.path)
-            NativeLoader.initialize(dataFolder)
-        } catch (error: UnsatisfiedLinkError) {
-            logger.error("Silk Codec 初始化失败, folder: $dataFolder", error)
-        }
+        val audio = resolveDataFile("audio")
+        audio.mkdirs()
+        System.setProperty(MiraiContentCensor.AUDIO_CACHE_PATH, audio.path)
+        val image = resolveDataFile("image")
+        image.mkdirs()
+        System.setProperty(MiraiContentCensor.IMAGE_CACHE_PATH, image.path)
 
         try {
             MiraiContentCensorRecorder.enable()
