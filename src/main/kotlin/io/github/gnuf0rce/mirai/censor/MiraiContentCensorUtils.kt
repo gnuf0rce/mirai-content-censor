@@ -42,16 +42,41 @@ internal val plains: MutableMap<String, CensorResult> = WeakHashMap(1024)
 
 internal val images: MutableMap<String, CensorResult> = WeakHashMap(1024)
 
+internal val wait: MutableMap<Long, StringBuilder> = WeakHashMap(1024)
+
 public suspend fun censor(message: MessageChain, config: HandleConfig = ContentCensorConfig): List<CensorResult> {
     val results = ArrayList<CensorResult>()
     // Text Censor
     if (config.plain && message.anyIsInstance<PlainText>()) {
-        val content = message.contentToString()
-        val result = plains.getOrPut(content) {
-            MiraiContentCensor.text(plain = content)
+        val content = message.joinToString(" ") { element ->
+            when (element) {
+                is PlainText -> element.content
+                is Face -> element.contentToString()
+                is MarketFace -> element.name
+                else -> ""
+            }
+        }
+        val source = message.sourceOrNull
+        val result = if (content.length <= 3 && source != null) {
+            // XXX: record id
+            val id = source.targetId xor source.fromId
+            val builder = wait.getOrPut(id, ::StringBuilder)
+            builder.appendLine(content)
+            if (builder.length >= 12) {
+                val current = builder.toString()
+                builder.clear()
+                plains.getOrPut(current) {
+                    MiraiContentCensor.text(plain = current)
+                }
+            }
+            null
+        } else {
+            plains.getOrPut(content) {
+                MiraiContentCensor.text(plain = content)
+            }
         }
 
-        results.add(result)
+        if (result != null) results.add(result)
     }
     // Image Censor
     if (config.image) {
