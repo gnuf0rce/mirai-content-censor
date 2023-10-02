@@ -30,7 +30,7 @@ public object MiraiContentCensor : AipContentCensor(client = MiraiBaiduAipClient
                         val temp = runInterruptible(Dispatchers.IO) {
                             Files.createTempFile(message.imageId, "image")
                         }
-                        channel.copyAndClose(temp.toFile().writeChannel())
+                        channel.joinTo(temp.toFile().writeChannel(), true)
                         temp.moveTo(source)
                     }
                 }
@@ -44,7 +44,7 @@ public object MiraiContentCensor : AipContentCensor(client = MiraiBaiduAipClient
                         val temp = runInterruptible(Dispatchers.IO) {
                             Files.createTempFile(message.filename, "audio")
                         }
-                        channel.copyAndClose(temp.toFile().writeChannel())
+                        channel.joinTo(temp.toFile().writeChannel(), true)
                         temp.moveTo(source)
                     }
                 }
