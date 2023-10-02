@@ -5,6 +5,8 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.util.cio.*
 import io.ktor.utils.io.*
+import io.ktor.utils.io.copyTo
+import io.ktor.utils.io.jvm.javaio.*
 import kotlinx.coroutines.*
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
@@ -30,7 +32,7 @@ public object MiraiContentCensor : AipContentCensor(client = MiraiBaiduAipClient
                         val temp = runInterruptible(Dispatchers.IO) {
                             Files.createTempFile(message.imageId, "image")
                         }
-                        channel.joinTo(temp.toFile().writeChannel(), true)
+                        temp.outputStream().use { channel.copyTo(it) }
                         temp.moveTo(source)
                     }
                 }
@@ -44,7 +46,7 @@ public object MiraiContentCensor : AipContentCensor(client = MiraiBaiduAipClient
                         val temp = runInterruptible(Dispatchers.IO) {
                             Files.createTempFile(message.filename, "audio")
                         }
-                        channel.joinTo(temp.toFile().writeChannel(), true)
+                        temp.outputStream().use { channel.copyTo(it) }
                         temp.moveTo(source)
                     }
                 }
